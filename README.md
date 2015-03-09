@@ -42,7 +42,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -v {orphan,volumes}, --view {orphan,volumes}
+  -v {orphan,volumes,images}, --view {orphan,volumes,images}
                         Available views: orphan and volumes. Orphan is the
                         default one.
 ```
