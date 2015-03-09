@@ -26,7 +26,11 @@ ec2-snap-mgmt.py
 
 With this script you can see the relationships between your snapshots and your EBS volumes and AMIs. This allows you to choose the snapshots you don't need to keep in the AWS S3 service.
 
-By default the script shows all the volumes and AMIs related to each snapshost, but you can also show all the snapshots related with each volume. This option is specially usefull when you only want to keep a certain number of snapshots per volume.
+By default the script shows all the volumes and AMIs related to each snapshost.
+
+You you can also show all the snapshots related with each volume. This option is specially usefull when you only want to keep a certain number of snapshots per volume.
+
+Finally, you can show all the snapshots related with each AMI.
 
 The '-h' option shows you how to use the available options.
 

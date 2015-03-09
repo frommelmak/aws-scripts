@@ -14,6 +14,16 @@ def snap_x_vol(owner_id):
             if s.volume_id == v.id:
                 print "   \_ %s, start_time: %s" % (s.id, s.start_time)
 
+# List all the snapshots for every image
+def snap_x_ami(owner_id):
+    conn = boto.ec2.connection.EC2Connection()
+    images = conn.get_all_images(owners=owner_id)
+    snapshots = conn.get_all_snapshots(owner=owner_id)
+    for i in images:
+        print "- %s (%s)" % (i.id, i.name)
+        for device in i.block_device_mapping:
+            print "   \_ %s (%s)" % (device, i.block_device_mapping[device].snapshot_id)
+
 # Find orphan snapshots (snapshots of non-existeng volumnes and snapshots without ami)
 def orphan_snapshots(owner_id):
     conn = boto.ec2.connection.EC2Connection()
@@ -32,7 +42,7 @@ def orphan_snapshots(owner_id):
         
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--view', default='orphan', choices=['orphan', 'volumes'],
+    parser.add_argument('-v', '--view', default='orphan', choices=['orphan', 'volumes', 'images'],
                         help="Available views: orphan and volumes. Orphan is the default one.")
     parser.add_argument('owner_id', help="12-digit AWS Account Number")
     arg = parser.parse_args()
@@ -42,6 +52,9 @@ def main():
 
     if arg.view == 'volumes':
         snap_x_vol(arg.owner_id)
+
+    if arg.view == 'images':
+        snap_x_ami(arg.owner_id)
 
 if __name__ == '__main__':
     sys.exit(main())
