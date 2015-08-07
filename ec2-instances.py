@@ -7,7 +7,7 @@ import argparse
 def list_instances(Filter):
    ec2 = boto3.resource('ec2')
    instances = ec2.instances.filter(Filters=Filter)
-   print "Num Name                       Public IP        Type             Status"
+   print "%-3s %-26s %-16s %-16s %-16s" % ("num", "Name", "Public IP", "Type", "Status")
    num = 1
    for i in instances:
       print "%-3d %-26s %-16s %-16s %-16s" % (num, i.tags[0]['Value'], i.public_ip_address, i.instance_type, i.state['Name'])
