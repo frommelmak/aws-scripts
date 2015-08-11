@@ -24,8 +24,9 @@ def execute_cmd(host,user,cmd):
     ssh.connect(host, username=user)
     stdin, stdout, stderr = ssh.exec_command(cmd)
     stdout=stdout.read()
+    stderr=stderr.read()
     ssh.close()
-    return stdout
+    return stdout,stderr
 
 def main():
     parser = argparse.ArgumentParser()
@@ -66,8 +67,9 @@ def main():
        print "Host list: %s" % hosts
        for name in hosts:
           print "::: %s" % name
-          print execute_cmd(hosts[name], arg.user, arg.execute)
-
+          stdout,stderr = execute_cmd(hosts[name], arg.user, arg.execute)
+          print stdout 
+          print stderr
 
 if __name__ == '__main__':
     sys.exit(main())
