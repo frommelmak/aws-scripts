@@ -60,11 +60,12 @@ def main():
         filter.append({'Name': 'instance-state-name', 'Values': ["*" + arg.status + "*"]})
 
     hosts=list_instances(filter)
+    names=hosts.keys()
 
     if arg.execute:
-       print "Command to execute: %s" % arg.execute
-       print "Command executed by the user: %s" % arg.user
-       print "Host list: %s" % hosts
+       print "\nCommand to execute: %s" % arg.execute
+       print "Executed by: %s" % arg.user
+       print "Hosts list: %s\n" % names 
        for name in hosts:
           print "::: %s" % name
           stdout,stderr = execute_cmd(hosts[name], arg.user, arg.execute)
