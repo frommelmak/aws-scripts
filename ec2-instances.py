@@ -38,7 +38,8 @@ def main():
     parser.add_argument('-e', '--execute',
                         help="Execute a command on instances")
     parser.add_argument('-u', '--user', default="ubuntu",
-                        help="User to run commands if -e option is used.")
+                        help="User to run commands if -e option is used.\
+                              Ubuntu user is used by default")
 
     arg = parser.parse_args()
 
