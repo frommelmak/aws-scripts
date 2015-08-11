@@ -1,0 +1,11 @@
+# Install with: `pip install -r requirements.txt`
+
+# General
+argparse
+
+# ec2-instances.py
+boto3
+paramiko
+
+# ec2-snap-mgmt.py
+boto

@@ -7,17 +7,13 @@ All the scripts relies on [Boto](http://aws.amazon.com/sdkforpython/), a Python 
 
 So, to use these scripts, you need to install Boto and provide your AWS credentinals:
 
-To install Boto just type:
+To install Boto and all the required Python packages just type:
 
 ```
-pip install boto
+pip install -r requirements.txt
 ```
 
-To install Boto3 (required by ec2-instances.py):
-
-```
-pip install boto3
-```
+If dependencies are already satisfied, nothing will be installed.
 
 To provide your AWS credentials export the following environment variables: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Alternatively, use the boto config file `~/.boto`:
 
