@@ -21,6 +21,33 @@ aws_access_key_id = <XXXXXXXXXXXXXXXXXXX>
 aws_secret_access_key = <xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>
 ```
 
+ec2-instances.py
+----------------
+
+List the EC2 instances including the Name Tag, the public IP, the type and the status.
+
+You can filter the result by name, type and/or status.
+
+Finally you can execute remote commands on all the instances returned by the filer.
+
+The '-h' option shows you how to use the available options.
+
+```
+usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-e EXECUTE]
+                        [-u USER]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Filter result by name.
+  -t TYPE, --type TYPE  Filer result by type.
+  -s STATUS, --status STATUS
+                        Filter result by status.
+  -e EXECUTE, --execute EXECUTE
+                        Execute a command on instances
+  -u USER, --user USER  User to run commands if -e option is used. Ubuntu user
+                        is used by default
+```
+
 ec2-snap-mgmt.py
 ----------------
 
@@ -49,29 +76,3 @@ optional arguments:
 
 The script doesn't delete anything actually, just shows you the relationship in a tree view.
 
-ec2-instances.py
-----------------
-
-List the EC2 instances including the Name Tag, the public IP, the type and the status.
-
-You can filter the result by name, type and/or status.
-
-Finally you can execute remote commands on all the instances returned by the filer.
-
-The '-h' option shows you how to use the available options.
-
-```
-usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-e EXECUTE]
-                        [-u USER]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -n NAME, --name NAME  Filter result by name.
-  -t TYPE, --type TYPE  Filer result by type.
-  -s STATUS, --status STATUS
-                        Filter result by status.
-  -e EXECUTE, --execute EXECUTE
-                        Execute a command on instances
-  -u USER, --user USER  User to run commands if -e option is used. Ubuntu user
-                        is used by default
-```
