@@ -13,6 +13,12 @@ To install Boto just type:
 pip install boto
 ```
 
+To install Boto3 (required by ec2-instances.py):
+
+```
+pip install boto3
+```
+
 To provide your AWS credentials export the following environment variables: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Alternatively, use the boto config file `~/.boto`:
 
 ```
