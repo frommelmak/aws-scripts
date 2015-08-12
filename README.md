@@ -15,12 +15,13 @@ pip install -r requirements.txt
 
 If dependencies are already satisfied, nothing will be installed.
 
-To provide your AWS credentials export the following environment variables: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Alternatively, use the boto config file `~/.boto`:
+To provide your AWS credentials use the boto/boto3 config file `~/.aws/config`:
 
 ```
-[Credentials]
+[default]
 aws_access_key_id = <XXXXXXXXXXXXXXXXXXX>
 aws_secret_access_key = <xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>
+region=xx-xxxx-x
 ```
 
 ec2-instances.py
