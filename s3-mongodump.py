@@ -9,8 +9,6 @@ def main():
                         help="Mongodb user (optional)")
     parser.add_argument('-p', '--password',
                         help="Mongodb password (optional)")
-    parser.add_argument('-t', '--type',
-                        help="Mongodb password (optional)")
     parser.add_argument('-H', '--host', default="localhost:27017",
                         help="Mongodb host." )
     parser.add_argument('-d', '--database',
@@ -24,6 +22,11 @@ def main():
 
     arg = parser.parse_args()
 
+    if arg.user and not arg.password:
+           parser.error("You provided a user but not a password")
+    
+    if arg.password and not arg.user:
+           parser.error("You provided a password but not a user")
 
 if __name__ == '__main__':
     sys.exit(main())
