@@ -6,6 +6,7 @@ import subprocess
 import shutil
 import os
 from datetime import datetime
+import operator
 
 def dump(host, database, username, password):
 
@@ -48,7 +49,10 @@ def main():
 
     if arg.password and not arg.user:
            parser.error("You provided a password but not a user")
-    
+   
+    if arg.prefix is not None and arg.prefix[-1:] is "/":
+       arg.prefix="%s" % arg.prefix[:-1]   
+ 
     # mongodump
     dump(arg.host, arg.database, arg.user, arg.password)
 
@@ -63,8 +67,10 @@ def main():
         num_files=0
 
     print "Filelist on the S3 bucket:"
+    filedict={}
     for object in objects:
         print (object.key)
+        filedict.update({object.key: object.last_modified})
         num_files=num_files + 1
     
     # create new tarball
@@ -84,11 +90,19 @@ def main():
     print "Uploading %s to Amazon S3..." % tarball_name
     s3.Object(arg.bucket, remote_file).put(Body=open(tarball_name, 'rb'))
 
-    # remove temprary tarball
+    # remove temporary tarball
     print "Removing temporary local tarball..."
     os.remove(tarball_name)
 
-    # remove expired dumps from s3
+    # keep de the last N dumps on s3: removes the oldest ones 
+    # remove the first element of array if prefix (dirname) was used
+    prefix= arg.prefix + "/"
+    if arg.prefix:
+       del filedict[arg.prefix + "/"]
+    sorted_filedict=sorted(filedict.items(), key=operator.itemgetter(1))
+    for item in sorted_filedict[0:len(sorted_filedict)-arg.number]:
+        print "Deleting file from S3: %s" % item[0]
+        object = s3.Object(arg.bucket, item[0]).delete()
 
 if __name__ == '__main__':
     sys.exit(main())
