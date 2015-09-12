@@ -79,3 +79,33 @@ optional arguments:
 
 The script doesn't delete anything actually, just shows you the relationship in a tree view.
 
+s3-mongodump.py
+---------------
+
+This is a tool to make mongodb backups on Amazon s3.
+
+It uses mongodump to perform a binary backup of your local or remote mongodb instance. The dumped files are compressed in a tarball file and uploaded to a Amazon S3 bucket.
+You can specify the number of copies to retain in the bucket. The oldest ones will be automatically removed.
+
+```
+age: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
+                       [-n NUMBER] -b BUCKET [-P PREFIX]
+
+A tool to make mongodb backups on Amazon s3
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USER, --user USER  Mongodb user (optional)
+  -p PASSWORD, --password PASSWORD
+                        Mongodb password (optional)
+  -H HOST, --host HOST  Mongodb host: <hostname>:<port>.
+  -d DATABASE, --database DATABASE
+                        The database to backup (all if not provided)
+  -n NUMBER, --number NUMBER
+                        Number of copies to retain in the S3 bucket
+  -b BUCKET, --bucket BUCKET
+                        Amazon s3 bucket.
+  -P PREFIX, --prefix PREFIX
+                        For grouped objects aka s3 folders, provide the prefix
+                        key
+```
