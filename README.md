@@ -88,7 +88,7 @@ It uses mongodump to perform a binary backup of your local or remote mongodb ins
 You can specify the number of copies to retain in the bucket. The oldest ones will be automatically removed.
 
 ```
-age: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
+usage: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
                        [-n NUMBER] -b BUCKET [-P PREFIX]
 
 A tool to make mongodb backups on Amazon s3
