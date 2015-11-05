@@ -51,6 +51,20 @@ optional arguments:
                         is used by default
 ```
 
+ec2-elb.py
+----------
+
+Lists all your Elastic Load Balancers and his related instances.
+
+```
+usage: ec2-elb.py [-h]
+
+For every Elastic Load Balancer list the attached instances
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
 ec2-snap-mgmt.py
 ----------------
 
