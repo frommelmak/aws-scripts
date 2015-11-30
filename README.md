@@ -103,7 +103,7 @@ You can specify the number of copies to retain in the bucket. The oldest ones wi
 
 ```
 usage: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
-                       [-n NUMBER] -b BUCKET [-P PREFIX]
+                       [-o OUT] [-n NUMBER] -b BUCKET [-P PREFIX]
 
 A tool to make mongodb backups on Amazon s3
 
@@ -115,6 +115,7 @@ optional arguments:
   -H HOST, --host HOST  Mongodb host: <hostname>:<port>.
   -d DATABASE, --database DATABASE
                         The database to backup (all if not provided)
+  -o OUT, --out OUT     The output directory for dumped files
   -n NUMBER, --number NUMBER
                         Number of copies to retain in the S3 bucket
   -b BUCKET, --bucket BUCKET
