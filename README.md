@@ -27,11 +27,11 @@ region=xx-xxxx-x
 ec2-instances.py
 ----------------
 
-List the EC2 instances including the Name Tag, the public IP, the type and the status.
+List the EC2 instances including the Name Tag, the public IP, the type, the vpc ID and the status.
 
 You can filter the result by name, type and/or status.
 
-Finally you can execute remote commands on all the instances returned by the filer.
+Finally you can execute remote commands on all the instances returned by the filter.
 
 The '-h' option shows you how to use the available options.
 
