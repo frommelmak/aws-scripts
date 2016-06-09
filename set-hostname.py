@@ -4,6 +4,8 @@ import argparse
 import boto3
 import re
 import urllib2
+import time
+from datetime import datetime
 
 def get_available_hostname(HostedZoneId, HostStr, rangeSize):
 
@@ -45,33 +47,60 @@ def get_public_dns_hostname():
     # curl http://169.254.169.254/latest/meta-data/public-hostname
     response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-hostname')
     public_dns = response.read()
-    print "Public DNS hostname: %s" % public_dns
     return public_dns
 
 def get_local_dns_hostname():
     # curl http://169.254.169.254/latest/meta-data/hostname
     response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/hostname')
     local_dns = response.read()
-    print "Local DNS hostname: %s" % local_dns
     return local_dns
 
 def get_private_ip():
     # curl http://169.254.169.254/latest/meta-data/local-ipv4
     response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4')
     private_ip = response.read()
-    print "Private IP: %s" % private_ip
     return private_ip
 
 def get_public_ip():
     # curl http://169.254.169.254/latest/meta-data/public-ipv4
     response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-ipv4')
     public_ip = response.read()
-    print "Public IP: %s" % public_ip
     return public_ip
 
-def set_hostname_record():
+def set_hostname_record(HostedZoneId, public_dns, available_hostname, private_ip):
     # Set hostname in Route53
-    print hola
+    client = boto3.client('route53')
+    response = client.change_resource_record_sets(
+    HostedZoneId=HostedZoneId,
+    ChangeBatch={
+    "Comment": "Record added using set-hostname.py script. From: " + private_ip,
+    "Changes": [
+        {
+            "Action": "CREATE",
+            "ResourceRecordSet": {
+                "Name": available_hostname,
+                "Type": "CNAME",
+                "TTL": 300,
+                "ResourceRecords": [
+                    {
+                        "Value": public_dns
+                    },
+                ]
+            }
+         },
+       ]
+     }
+    )
+    idstring = response.get('ChangeInfo').get('Id')
+    response = client.get_change(Id=idstring)
+    while response.get('ChangeInfo').get('Status') == 'PENDING':
+       sys.stdout.write('.')
+       sys.stdout.flush()
+       time.sleep( 5 )
+       response = client.get_change(Id=idstring)
+    else:
+       print response.get('ChangeInfo').get('Status')
+       return
 
 def main():
     parser = argparse.ArgumentParser(description='AWS Route53 hostname managment for Autoscaled EC2 Instances')
@@ -91,10 +120,14 @@ def main():
     if arg.dryrun:
        print "First available hostname in the range: %s" % available_hostname
 
-    #get_private_ip()
-    #get_public_dns_hostname()
+    private_ip = get_private_ip()
+    public_dns = get_public_dns_hostname()
     #get_local_dns_hostname()
     #get_public_ip()
+    date = datetime.now().strftime('%H:%M:%S %D')
+    sys.stdout.write ("%s: creating CNAME %s -> %s" % (date, available_hostname, public_dns))
+    sys.stdout.flush()
+    set_hostname_record(arg.HostedZoneId, public_dns, available_hostname, private_ip)
 
 if __name__ == '__main__':
     sys.exit(main())
