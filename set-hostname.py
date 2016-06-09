@@ -117,9 +117,6 @@ def main():
 
     available_hostname = get_available_hostname(arg.HostedZoneId, arg.HostStr, arg.rangeSize)
 
-    if arg.dryrun:
-       print "First available hostname in the range: %s" % available_hostname
-
     private_ip = get_private_ip()
     public_dns = get_public_dns_hostname()
     #get_local_dns_hostname()
@@ -127,7 +124,9 @@ def main():
     date = datetime.now().strftime('%H:%M:%S %D')
     sys.stdout.write ("%s: creating CNAME %s -> %s" % (date, available_hostname, public_dns))
     sys.stdout.flush()
-    set_hostname_record(arg.HostedZoneId, public_dns, available_hostname, private_ip)
+
+    if arg.dryrun is False:
+       set_hostname_record(arg.HostedZoneId, public_dns, available_hostname, private_ip)
 
 if __name__ == '__main__':
     sys.exit(main())
