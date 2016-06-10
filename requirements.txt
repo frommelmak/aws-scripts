@@ -12,4 +12,3 @@ boto
 
 # s3-mongodump
 sshutil
-datetime
