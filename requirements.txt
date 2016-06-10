@@ -3,7 +3,6 @@
 # General
 boto3
 argparse
-sys
 
 # ec2-instances.py
 paramiko
@@ -12,8 +11,5 @@ paramiko
 boto
 
 # s3-mongodump
-subprocess
-shutil
-os
-operator
+sshutil
 datetime
