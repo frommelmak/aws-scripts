@@ -129,8 +129,9 @@ route53-set-hostname.py
 -----------------------
 
 This script allows you to automatically set predictable DNS records for instances launched using AWS Auto Scaling. 
+
 It is intended to be executed from the ec2 instance at launch time.
-The script looks for an available name matching the provided pattern in the DNS zone. Then adds this name as a CNAME record in the DNS zone pointing to the EC2 instance public name.
+The script looks for an available name matching the provided pattern in the DNS zone. Then, it adds this name as a CNAME record in the DNS zone pointing to the EC2 instance public name.
 
 ```
 age: route53-set-hostname.py [-h] --HostedZoneId HOSTEDZONEID --HostStr
