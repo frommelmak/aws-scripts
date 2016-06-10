@@ -124,3 +124,36 @@ optional arguments:
                         For grouped objects aka s3 folders, provide the prefix
                         key
 ```
+
+route53-set-hostname.py
+-----------------------
+
+This script allows you to automatically set predictable DNS records for instances launched using AWS Auto Scaling. 
+It is intended to be executed from the ec2 instance at launch time.
+The script looks for an available name matching the provided pattern in the DNS zone. Then adds this name as a CNAME record in the DNS zone pointing to the EC2 instance public name.
+
+```
+age: route53-set-hostname.py [-h] --HostedZoneId HOSTEDZONEID --HostStr
+                               HOSTSTR [--rangeSize RANGESIZE] [--dryrun]
+
+AWS Route53 hostname managment for Autoscaled EC2 Instances
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --HostedZoneId HOSTEDZONEID
+                        The ID of the hosted zone where the new resource
+                        record will be added.
+  --HostStr HOSTSTR     The host string used to build the new name
+  --rangeSize RANGESIZE
+                        The maximun number to be assigned. The first available
+                        will be used
+  --dryrun              Shows what is going to be done but doesn't change
+                        anything actually
+```
+
+Example:
+
+```
+user@host:~$ ./route53-set-hostname.py --HostedZoneId XXXXXXXXXXXXXX --HostStr websrv --rangeSize 10
+15:41:58 06/09/16: creating CNAME websrv03.example.com. -> ec2-XX-XX-XXX-XX.compute-1.amazonaws.com......INSYNC
+```
