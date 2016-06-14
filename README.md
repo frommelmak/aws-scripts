@@ -158,3 +158,23 @@ Example:
 user@host:~$ ./route53-set-hostname.py --HostedZoneId XXXXXXXXXXXXXX --HostStr websrv --rangeSize 10
 15:41:58 06/09/16: creating CNAME websrv03.example.com. -> ec2-XX-XX-XXX-XX.compute-1.amazonaws.com......INSYNC
 ```
+
+s3-download-file.py
+-------------------
+
+This script just download the requested S3 object.
+
+```
+usage: s3-download-file.py [-h] -b BUCKET -o OBJECTKEY -f FILEPATH
+
+Donwload file from AWS S3
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b BUCKET, --bucket BUCKET
+                        The bucket name.
+  -o OBJECTKEY, --objectkey OBJECTKEY
+                        The host string used to build the new name
+  -f FILEPATH, --filepath FILEPATH
+                        The filepath of the file to be saved
+```
