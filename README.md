@@ -159,6 +159,26 @@ user@host:~$ ./route53-set-hostname.py --HostedZoneId XXXXXXXXXXXXXX --HostStr w
 15:41:58 06/09/16: creating CNAME websrv03.example.com. -> ec2-XX-XX-XXX-XX.compute-1.amazonaws.com......INSYNC
 ```
 
+route53-del-hostname.py
+-----------------------
+
+This script is executed from the ec2 instance at shutdown.
+The script delete his host record zone from the passed DNS zone identifier.
+
+```
+usage: route53-del-hostname.py [-h] --HostedZoneId HOSTEDZONEID [--dryrun]
+
+AWS Route53 hostname managment for Autoscaled EC2 Instances
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --HostedZoneId HOSTEDZONEID
+                        The ID of the hosted zone where the new resource
+                        record will be added.
+  --dryrun              Shows what is going to be done but doesn't change
+                        anything actually
+```
+
 s3-download-file.py
 -------------------
 
