@@ -8,6 +8,7 @@ import urllib2
 from subprocess import call
 import time
 from datetime import datetime
+import shlex
 
 def sqs_consumer(qname):
     sqs = boto3.resource('sqs')
@@ -50,6 +51,9 @@ def main():
        state = "autoscaling:EC2_INSTANCE_TERMINATING"
     elif arg.state == "TERMINATING":
        state = "autoscaling:EC2_INSTANCE_LAUNCHING"
+
+    cmd_args = shlex.split(arg.execute)
+    print ("command to execute: %s") % cmd_args
 
     ec2instanceid = get_ec2instanceid()
     print ("%s Listening for %s SQS messages using long polling") % (datetime.now().strftime('%H:%M:%S %D'), ec2instanceid)
