@@ -198,3 +198,32 @@ optional arguments:
   -f FILEPATH, --filepath FILEPATH
                         The filepath of the file to be saved
 ```
+
+lifecycle-hook-worker.py
+------------------------
+
+As its own name says, this worker is designed to use auto scaling lifecycle hooks.
+
+The process looks for incoming messages into the SQS queue asociated with the autoscaling group. Then, when a message comes for the instance, it is consumed and the associated custom action is triggered. Finally, using the lifecyle action token, the worker completes the autoscaling action going on with the launch or ending the instance action.
+
+```
+usage: lifecycle-hook-worker.py [-h] -q QUEUE -s {LAUNCHING,TERMINATING} -g
+                                GROUP -H HOOKNAME -e EXECUTE [-w WAIT]
+
+SQS Lifecycle hook consumer and trigger
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -q QUEUE, --queue QUEUE
+                        Queue resource.
+  -s {LAUNCHING,TERMINATING}, --state {LAUNCHING,TERMINATING}
+                        Indicates if the consumer is waiting for LAUNCHING or
+                        TERMINATING state
+  -g GROUP, --group GROUP
+                        Auto Scaling Group Name
+  -H HOOKNAME, --hookName HOOKNAME
+                        Life Cycle Hook Name
+  -e EXECUTE, --execute EXECUTE
+                        The filepath of the triggered script
+  -w WAIT, --wait WAIT  Time between query loops in seconds (default: 60)
+```
