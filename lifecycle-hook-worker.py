@@ -53,7 +53,6 @@ def main():
        state = "autoscaling:EC2_INSTANCE_LAUNCHING"
 
     cmd_args = shlex.split(arg.execute)
-    print ("command to execute: %s") % cmd_args
 
     ec2instanceid = get_ec2instanceid()
     print ("%s Listening for %s SQS messages using long polling") % (datetime.now().strftime('%H:%M:%S %D'), ec2instanceid)
@@ -67,7 +66,7 @@ def main():
        elif (sqs_msg['Event'] == state) and (sqs_msg['EC2InstanceId'] == ec2instanceid):
           print "%s %s hook message received" % (datetime.now().strftime('%H:%M:%S %D'), arg.state)
           print "%s Executing filepath" % datetime.now().strftime('%H:%M:%S %D')
-          call(["uname", "-a"])
+          call(cmd_args)
           print "%s Completing lifecyle action" % datetime.now().strftime('%H:%M:%S %D')
           as_client = boto3.client('autoscaling')
           response = as_client.complete_lifecycle_action(
