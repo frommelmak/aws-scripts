@@ -26,7 +26,11 @@ def sqs_consumer(qname):
 
 def get_ec2instanceid():
     # curl http://169.254.169.254/latest/meta-data/instance-id
-    response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id')
+    try:
+       response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id')
+    except:
+       sys.exit("%s I am not running in EC2. Aborting!!" % datetime.now().strftime('%H:%M:%S %D')) 
+        
     instanceid = response.read()
     return instanceid
 
@@ -53,7 +57,8 @@ def main():
        state = "autoscaling:EC2_INSTANCE_LAUNCHING"
 
     cmd_args = shlex.split(arg.execute)
-
+    
+    print ("%s Getting EC2 instance ID") % datetime.now().strftime('%H:%M:%S %D')  
     ec2instanceid = get_ec2instanceid()
     print ("%s Listening for %s SQS messages using long polling") % (datetime.now().strftime('%H:%M:%S %D'), ec2instanceid)
 
