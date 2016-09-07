@@ -90,7 +90,8 @@ def main():
     # upload the new tarball to s3
     remote_file="%s/%s" % (arg.prefix,os.path.basename(tarball_name))
     print "Uploading %s to Amazon S3..." % tarball_name
-    s3.Object(arg.bucket, remote_file).put(Body=open(tarball_name, 'rb'))
+    s3_client = boto3.client('s3')
+    s3.meta.client.upload_file(tarball_name, arg.bucket, remote_file)
 
     # remove temporary tarball
     print "Removing temporary local tarball..."
