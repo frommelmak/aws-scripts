@@ -11,11 +11,12 @@ def list_instances(Filter):
    columns_format="%-3s %-26s %-16s %-12s %-12s %-12s %-16s"
    print columns_format % ("num", "Name", "Public IP", "ID", "Type", "VPC", "Status")
    num = 1
-   hosts = {}
+   hosts = [] 
    for i in instances:
       print columns_format % (num, i.tags[0]['Value'], i.public_ip_address, i.id, i.instance_type, i.vpc_id, i.state['Name'])
       num = num + 1
-      hosts[i.tags[0]['Value']]=i.public_ip_address
+      item={'id': i.id, 'ip': i.public_ip_address, 'hostname': i.tags[0]['Value'],}
+      hosts.append(item)
    return hosts
 
 def execute_cmd(host,user,cmd):
@@ -60,15 +61,17 @@ def main():
         filter.append({'Name': 'instance-state-name', 'Values': ["*" + arg.status + "*"]})
 
     hosts=list_instances(filter)
-    names=hosts.keys()
+    names = ""
+    for item in hosts:
+       names = names + " " + item["hostname"]
 
     if arg.execute:
        print "\nCommand to execute: %s" % arg.execute
        print "Executed by: %s" % arg.user
        print "Hosts list: %s\n" % names 
-       for name in hosts:
-          print "::: %s" % name
-          stdout,stderr = execute_cmd(hosts[name], arg.user, arg.execute)
+       for item in hosts:
+          print "::: %s (%s)" % (item["hostname"], item["id"])
+          stdout,stderr = execute_cmd(item["ip"], arg.user, arg.execute)
           print stdout 
           print stderr
 
