@@ -8,7 +8,7 @@ import paramiko
 def list_instances(Filter):
    ec2 = boto3.resource('ec2')
    instances = ec2.instances.filter(Filters=Filter)
-   columns_format="%-3s %-26s %-16s %-12s %-12s %-12s %-16s"
+   columns_format="%-3s %-26s %-16s %-20s %-12s %-12s %-16s"
    print columns_format % ("num", "Name", "Public IP", "ID", "Type", "VPC", "Status")
    num = 1
    hosts = [] 
