@@ -9,11 +9,18 @@ def list_elb():
    response = client.describe_load_balancers()
    ec2 = boto3.resource('ec2')
    for elb in range(len(response.get('LoadBalancerDescriptions'))):
-      print response.get('LoadBalancerDescriptions')[elb].get('LoadBalancerName')
+      load_balancer_name = response.get('LoadBalancerDescriptions')[elb].get('LoadBalancerName')
+      print u"%s" % load_balancer_name
       for instance in range(len(response.get('LoadBalancerDescriptions')[elb].get('Instances'))):
          id = response.get('LoadBalancerDescriptions')[elb].get('Instances')[instance].get('InstanceId')
-         instance = ec2.Instance(id)
-         print u"  └── %s (%s)" % (id, instance.tags[0]['Value'])
+         instance_id = ec2.Instance(id)
+         instance_state = client.describe_instance_health(LoadBalancerName=load_balancer_name)
+         print u"  └── %s (%s) Status: %s, Description: %s" % (
+                                                               id, 
+                                                               instance_id.tags[0]['Value'],
+                                                               instance_state.get('InstanceStates')[instance].get('State'),
+                                                               instance_state.get('InstanceStates')[instance].get('Description')
+                                                              )
 
 
 def main():
