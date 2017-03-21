@@ -227,3 +227,17 @@ optional arguments:
                         The filepath of the triggered script
   -w WAIT, --wait WAIT  Time between query loops in seconds (default: 60)
 ```
+
+rds-instances.py
+----------------
+
+Shows the main info regarding all the RDS instances such as: endpoint, engine, version, status etc.
+
+```
+usage: rds-instances.py [-h]
+
+List all the RDS instances
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
