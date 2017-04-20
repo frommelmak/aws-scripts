@@ -13,9 +13,10 @@ def list_instances(Filter):
    num = 1
    hosts = [] 
    for i in instances:
+      name = (item for item in i.tags if item["Key"] == "Name" ).next()
       print columns_format % (
                                num,
-                               i.tags[0]['Value'],
+                               name['Value'], 
                                i.public_ip_address,
                                i.private_ip_address,
                                i.id,
