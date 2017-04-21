@@ -20,7 +20,6 @@ def sqs_get_msg(qname):
        m = message.get('Messages')[0]
        body = ast.literal_eval(m['Body'])
        receipt_handle = m['ReceiptHandle']
-       #response = client.delete_message(QueueUrl=queue.url, ReceiptHandle=receipt_handle)
     else:
        body = {'LifecycleTransition': False}
        receipt_handle = ""
@@ -35,7 +34,6 @@ def sqs_delete_msg(qname, receipt_handle):
 
 
 def get_ec2instanceid():
-    # curl http://169.254.169.254/latest/meta-data/instance-id
     try:
        response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id')
     except:
