@@ -89,7 +89,7 @@ def main():
              AutoScalingGroupName=arg.group,
              LifecycleActionToken=sqs_msg['LifecycleActionToken'],
              LivecycleActionResult='CONTINUE',
-             InstanceID=ec2instanceid
+             InstanceId=ec2instanceid
           )
        time.sleep(arg.wait)
 
