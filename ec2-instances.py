@@ -12,8 +12,13 @@ def list_instances(Filter):
    print columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "VPC", "Status")
    num = 1
    hosts = [] 
+   name = {}  
    for i in instances:
-      name = (item for item in i.tags if item["Key"] == "Name" ).next()
+      try:
+         name = (item for item in i.tags if item["Key"] == "Name" ).next()
+      except StopIteration:
+         name['Value'] = ''
+      
       print columns_format % (
                                num,
                                name['Value'], 
@@ -56,10 +61,7 @@ def main():
     arg = parser.parse_args()
 
     # Default filter if no options are specified
-    filter=[{
-             'Name': 'tag-key',
-             'Values': ['Name'],
-           }]
+    filter=[]
 
     if arg.name:
         filter.append({'Name': 'tag-value', 'Values': ["*" + arg.name + "*"]})
