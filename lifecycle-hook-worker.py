@@ -78,7 +78,7 @@ def main():
        elif sqs_msg['LifecycleTransition'] == False:
           print ("%s There are no messages in the queue. Sleeping and trying again") % datetime.now().strftime('%H:%M:%S %D')
        elif (sqs_msg['LifecycleTransition'] == state) and (sqs_msg['EC2InstanceId'] == ec2instanceid):
-          sqs_delete_msq(arg.queue, sqs_receipt_handle)
+          sqs_delete_msg(arg.queue, sqs_receipt_handle)
           print "%s %s hook message received" % (datetime.now().strftime('%H:%M:%S %D'), arg.state)
           print "%s Executing filepath" % datetime.now().strftime('%H:%M:%S %D')
           call(cmd_args)
