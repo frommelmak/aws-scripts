@@ -37,12 +37,15 @@ def list_instances(Filter):
 def execute_cmd(host,user,cmd):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(host, username=user)
-    stdin, stdout, stderr = ssh.exec_command(cmd)
-    stdout=stdout.read()
-    stderr=stderr.read()
-    ssh.close()
-    return stdout,stderr
+    try:
+       ssh.connect(host, username=user)
+       stdin, stdout, stderr = ssh.exec_command(cmd)
+       stdout=stdout.read()
+       stderr=stderr.read()
+       ssh.close()
+       return stdout,stderr
+    except paramiko.AuthenticationException, e:
+       return "Authentication Error trying to connect into the host %s with the user %s. Plese review your keys" % (host, user), e 
 
 def main():
     parser = argparse.ArgumentParser()
