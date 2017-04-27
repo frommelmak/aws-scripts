@@ -17,7 +17,7 @@ If dependencies are already satisfied, nothing will be installed.
 
 To provide your AWS credentials use the boto/boto3 config file `~/.aws/config`:
 
-```
+``` ini
 [default]
 aws_access_key_id = <XXXXXXXXXXXXXXXXXXX>
 aws_secret_access_key = <xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>
@@ -35,7 +35,7 @@ Finally you can execute remote commands on all the instances returned by the fil
 
 The '-h' option shows you how to use the available options.
 
-```
+``` bash
 usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-e EXECUTE]
                         [-u USER]
 
@@ -56,7 +56,7 @@ ec2-elb.py
 
 Lists all your Elastic Load Balancers and his related instances.
 
-```
+``` bash
 usage: ec2-elb.py [-h]
 
 For every Elastic Load Balancer list the attached instances
@@ -78,7 +78,7 @@ Finally, you can show all the snapshots related with each AMI.
 
 The '-h' option shows you how to use the available options.
 
-```
+``` bash
 usage: ec2-snap-mgmt.py [-h] [-v {orphan,volumes}] owner_id
 
 positional arguments:
@@ -101,7 +101,7 @@ This is a tool to make mongodb backups on Amazon s3.
 It uses mongodump to perform a binary backup of your local or remote mongodb instance. The dumped files are compressed in a tarball file and uploaded to a Amazon S3 bucket.
 You can specify the number of copies to retain in the bucket. The oldest ones will be automatically removed.
 
-```
+``` bash
 usage: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
                        [-o OUT] [-n NUMBER] -b BUCKET [-P PREFIX]
 
@@ -133,8 +133,8 @@ This script allows you to automatically set predictable DNS records for instance
 It is intended to be executed from the ec2 instance at launch time.
 The script looks for an available name matching the provided pattern in the DNS zone. Then, it adds this name as a CNAME record in the DNS zone pointing to the EC2 instance public name.
 
-```
-age: route53-set-hostname.py [-h] --HostedZoneId HOSTEDZONEID --HostStr
+``` bash
+usage: route53-set-hostname.py [-h] --HostedZoneId HOSTEDZONEID --HostStr
                                HOSTSTR [--rangeSize RANGESIZE] [--dryrun]
 
 AWS Route53 hostname managment for Autoscaled EC2 Instances
@@ -154,7 +154,7 @@ optional arguments:
 
 Example:
 
-```
+``` bash
 user@host:~$ ./route53-set-hostname.py --HostedZoneId XXXXXXXXXXXXXX --HostStr websrv --rangeSize 10
 15:41:58 06/09/16: creating CNAME websrv03.example.com. -> ec2-XX-XX-XXX-XX.compute-1.amazonaws.com......INSYNC
 ```
@@ -165,7 +165,7 @@ route53-del-hostname.py
 This script is executed from the ec2 instance at shutdown.
 The script delete his host record zone from the passed DNS zone identifier.
 
-```
+``` bash
 usage: route53-del-hostname.py [-h] --HostedZoneId HOSTEDZONEID [--dryrun]
 
 AWS Route53 hostname managment for Autoscaled EC2 Instances
@@ -184,7 +184,7 @@ s3-download-file.py
 
 This script just download the requested S3 object.
 
-```
+``` bash
 usage: s3-download-file.py [-h] -b BUCKET -o OBJECTKEY -f FILEPATH
 
 Donwload file from AWS S3
@@ -206,7 +206,7 @@ As its own name says, this worker is designed to use auto scaling [lifecycle hoo
 
 The process looks for incoming messages into the SQS queue asociated with the autoscaling group. Then, when a message comes for the instance, it is consumed and the associated custom action is triggered. Finally, using the lifecyle action token, the worker completes the autoscaling action going on with the launch or ending the instance action.
 
-```
+``` bash
 usage: lifecycle-hook-worker.py [-h] -q QUEUE -s {LAUNCHING,TERMINATING} -g
                                 GROUP -H HOOKNAME -e EXECUTE [-w WAIT]
 
@@ -233,7 +233,7 @@ rds-instances.py
 
 Shows the main info regarding all the RDS instances such as: endpoint, engine, version, status etc.
 
-```
+``` bash
 usage: rds-instances.py [-h]
 
 List all the RDS instances
