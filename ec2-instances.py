@@ -30,7 +30,7 @@ def list_instances(Filter):
                                i.state['Name']
                              )
       num = num + 1
-      item={'id': i.id, 'ip': i.public_ip_address, 'hostname': i.tags[0]['Value'],}
+      item={'id': i.id, 'ip': i.public_ip_address, 'hostname': name['Value'],}
       hosts.append(item)
    return hosts
 
@@ -78,7 +78,7 @@ def main():
     hosts=list_instances(filter)
     names = ""
     for item in hosts:
-       names = names + " " + item["hostname"]
+       names = names + " " + item["hostname"] + "(" + item["id"] + ")"
 
     if arg.execute:
        print "\nCommand to execute: %s" % arg.execute
