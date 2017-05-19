@@ -30,7 +30,7 @@ def list_instances(Filter):
                                i.state['Name']
                              )
       num = num + 1
-      item={'id': i.id, 'ip': i.public_ip_address, 'hostname': name['Value'],}
+      item={'id': i.id, 'ip': i.public_ip_address, 'hostname': name['Value'], 'status': i.state['Name'],}
       hosts.append(item)
    return hosts
 
@@ -77,18 +77,21 @@ def main():
 
     hosts=list_instances(filter)
     names = ""
-    for item in hosts:
-       names = names + " " + item["hostname"] + "(" + item["id"] + ")"
 
     if arg.execute:
+       for item in hosts:
+          names = names + " " + item["hostname"] + "(" + item["id"] + ")"
        print "\nCommand to execute: %s" % arg.execute
        print "Executed by: %s" % arg.user
        print "Hosts list: %s\n" % names 
        for item in hosts:
-          print "::: %s (%s)" % (item["hostname"], item["id"])
-          stdout,stderr = execute_cmd(item["ip"], arg.user, arg.execute)
-          print stdout 
-          print stderr
+          if item["status"] == 'running':
+             print "::: %s (%s)" % (item["hostname"], item["id"])
+             stdout,stderr = execute_cmd(item["ip"], arg.user, arg.execute)
+             print stdout 
+             print stderr
+          else:
+             print "::: %s (%s) is not running (command execution skiped)" % (item["hostname"], item["id"])
 
 if __name__ == '__main__':
     sys.exit(main())
