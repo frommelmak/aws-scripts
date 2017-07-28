@@ -15,7 +15,7 @@ def list_elb():
          id = response.get('LoadBalancerDescriptions')[elb].get('Instances')[instance].get('InstanceId')
          instance_id = ec2.Instance(id)
          instance_state = client.describe_instance_health(LoadBalancerName=load_balancer_name)
-         print u"  └── %s (%s) Status: %s, Description: %s" % (
+         print u"  └── %-20s (%s) Status: %s, Description: %s" % (
                                                                id, 
                                                                instance_id.tags[0]['Value'],
                                                                instance_state.get('InstanceStates')[instance].get('State'),
