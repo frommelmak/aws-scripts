@@ -5,9 +5,9 @@ import argparse
 import paramiko
 
 
-def list_instances(Filter):
+def list_instances(Filter, InstanceIds):
    ec2 = boto3.resource('ec2')
-   instances = ec2.instances.filter(Filters=Filter)
+   instances = ec2.instances.filter(Filters=Filter, InstanceIds=InstanceIds)
    columns_format="%-3s %-26s %-16s %-16s %-20s %-12s %-12s %-16s"
    print columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "VPC", "Status")
    num = 1
@@ -55,6 +55,9 @@ def main():
                         help="Filer result by type.")
     parser.add_argument('-s', '--status',
                         help="Filter result by status." )
+    parser.add_argument('-l', '--id_list',
+                        nargs='+', type=str,
+                        help="Provide a list of InstanceIds." )
     parser.add_argument('-e', '--execute',
                         help="Execute a command on instances")
     parser.add_argument('-u', '--user', default="ubuntu",
@@ -65,6 +68,7 @@ def main():
 
     # Default filter if no options are specified
     filter=[]
+    InstanceIds=[]
 
     if arg.name:
         filter.append({'Name': 'tag-value', 'Values': ["*" + arg.name + "*"]})
@@ -75,7 +79,10 @@ def main():
     if arg.status:
         filter.append({'Name': 'instance-state-name', 'Values': ["*" + arg.status + "*"]})
 
-    hosts=list_instances(filter)
+    if arg.id_list:
+        InstanceIds=arg.id_list
+
+    hosts=list_instances(filter,InstanceIds)
     names = ""
 
     if arg.execute:
