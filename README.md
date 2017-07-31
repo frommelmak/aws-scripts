@@ -31,7 +31,7 @@ List the EC2 instances including the Name Tag, the public IP, the type, the vpc 
 
 You can filter the result by name, type and/or status. Or you can provide a list of instance IDs instead.
 
-Finally you can execute remote commands on all the instances returned by the filter.
+Finally you can execute remote commands on all the instances returned by the filter or the list.
 
 The '-h' option shows you how to use the available options.
 
