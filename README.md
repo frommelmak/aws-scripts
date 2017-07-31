@@ -29,15 +29,15 @@ ec2-instances.py
 
 List the EC2 instances including the Name Tag, the public IP, the type, the vpc ID and the status.
 
-You can filter the result by name, type and/or status.
+You can filter the result by name, type and/or status. Or you can provide a list of instance IDs instead.
 
 Finally you can execute remote commands on all the instances returned by the filter.
 
 The '-h' option shows you how to use the available options.
 
 ``` bash
-usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-e EXECUTE]
-                        [-u USER]
+usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS]
+                        [-l ID_LIST [ID_LIST ...]] [-e EXECUTE] [-u USER]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -45,6 +45,8 @@ optional arguments:
   -t TYPE, --type TYPE  Filer result by type.
   -s STATUS, --status STATUS
                         Filter result by status.
+  -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
+                        Provide a list of InstanceIds.
   -e EXECUTE, --execute EXECUTE
                         Execute a command on instances
   -u USER, --user USER  User to run commands if -e option is used. Ubuntu user
