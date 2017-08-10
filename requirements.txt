@@ -12,3 +12,17 @@ boto
 
 # s3-mongodump
 sshutil
+operator
+
+# route53-[set|del]-hostname.py
+urllib2
+socket
+time
+
+#lifecycle-hook-worker.py
+subprocess
+shlex
+ast
+
+#s3-download-file.py
+botocore
