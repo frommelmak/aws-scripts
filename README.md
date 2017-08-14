@@ -24,6 +24,8 @@ aws_secret_access_key = <xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>
 region=xx-xxxx-x
 ```
 
+> Note that you can use the environment variable: ```AWS_DEFAULT_REGION=xx-xxxx-x``` to override the default region on the config file.
+
 ec2-instances.py
 ----------------
 
