@@ -15,7 +15,7 @@ pip install -r requirements.txt
 
 If dependencies are already satisfied, nothing will be installed.
 
-To provide your AWS credentials use the boto/boto3 config file `~/.aws/config`:
+To provide your AWS credentials use the boto/boto3 config file `~/.aws/credentials`:
 
 ``` ini
 [default]

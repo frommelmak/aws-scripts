@@ -43,6 +43,7 @@ def orphan_snapshots(owner_id):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--view', default='orphan', choices=['orphan', 'volumes', 'images'],
+                        required=True,
                         help="Available views: orphan and volumes. Orphan is the default one.")
     parser.add_argument('owner_id', help="12-digit AWS Account Number")
     arg = parser.parse_args()
