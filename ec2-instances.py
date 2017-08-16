@@ -5,8 +5,8 @@ import argparse
 import paramiko
 
 
-def list_instances(Filter, InstanceIds):
-   ec2 = boto3.resource('ec2')
+def list_instances(Filter, RegionName, InstanceIds):
+   ec2 = boto3.resource('ec2', region_name=RegionName)
    instances = ec2.instances.filter(Filters=Filter, InstanceIds=InstanceIds)
    columns_format="%-3s %-26s %-16s %-16s %-20s %-12s %-12s %-16s"
    print columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "VPC", "Status")
@@ -60,6 +60,9 @@ def main():
                         help="Provide a list of InstanceIds." )
     parser.add_argument('-e', '--execute',
                         help="Execute a command on instances")
+    parser.add_argument('-r', '--region',
+                        help="Specify an alternate region to override \
+                              the one defined in the .aws/credentials file")
     parser.add_argument('-u', '--user', default="ubuntu",
                         help="User to run commands if -e option is used.\
                               Ubuntu user is used by default")
@@ -82,7 +85,7 @@ def main():
     if arg.id_list:
         InstanceIds=arg.id_list
 
-    hosts=list_instances(filter,InstanceIds)
+    hosts=list_instances(filter,arg.region,InstanceIds)
     names = ""
 
     if arg.execute:

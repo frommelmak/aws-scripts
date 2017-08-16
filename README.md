@@ -25,6 +25,7 @@ region=xx-xxxx-x
 ```
 
 > Note that you can use the environment variable: ```AWS_DEFAULT_REGION=xx-xxxx-x``` to override the default region on the config file.
+> In the ec2-instances.py script you can also use the --region option for the same purpose 
 
 ec2-instances.py
 ----------------
