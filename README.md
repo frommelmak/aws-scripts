@@ -38,9 +38,10 @@ Finally you can execute remote commands on all the instances returned by the fil
 
 The '-h' option shows you how to use the available options.
 
-``` bash
+```
 usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS]
-                        [-l ID_LIST [ID_LIST ...]] [-e EXECUTE] [-u USER]
+                        [-l ID_LIST [ID_LIST ...]] [-e EXECUTE] [-r REGION]
+                        [-u USER]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -52,6 +53,9 @@ optional arguments:
                         Provide a list of InstanceIds.
   -e EXECUTE, --execute EXECUTE
                         Execute a command on instances
+  -r REGION, --region REGION
+                        Specify an alternate region to override the one
+                        defined in the .aws/credentials file
   -u USER, --user USER  User to run commands if -e option is used. Ubuntu user
                         is used by default
 ```
