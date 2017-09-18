@@ -84,6 +84,12 @@ def main():
 
     if arg.id_list:
         InstanceIds=arg.id_list
+    
+    if arg.region: 
+       client = boto3.client('ec2')
+       regions = [region['RegionName'] for region in client.describe_regions()['Regions']]
+       if arg.region not in regions:
+          sys.exit("ERROR: Please, choose a valid region.")
 
     hosts=list_instances(filter,arg.region,InstanceIds)
     names = ""
