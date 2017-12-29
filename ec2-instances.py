@@ -8,8 +8,8 @@ import paramiko
 def list_instances(Filter, RegionName, InstanceIds):
    ec2 = boto3.resource('ec2', region_name=RegionName)
    instances = ec2.instances.filter(Filters=Filter, InstanceIds=InstanceIds)
-   columns_format="%-3s %-26s %-16s %-16s %-20s %-12s %-12s %-16s"
-   print columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "VPC", "Status")
+   columns_format="%-3s %-26s %-15s %-15s %-20s %-10s %-11s %-12s %-16s"
+   print columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "Zone","VPC", "Status")
    num = 1
    hosts = [] 
    name = {}  
@@ -26,6 +26,7 @@ def list_instances(Filter, RegionName, InstanceIds):
                                i.private_ip_address,
                                i.id,
                                i.instance_type,
+                               i.placement['AvailabilityZone'],
                                i.vpc_id,
                                i.state['Name']
                              )
