@@ -9,8 +9,8 @@ def list_reserved_instances(ec2, filters):
     client = boto3.client('ec2')
     response = client.describe_reserved_instances(Filters=filters)
     size = len(response.get('ReservedInstances'))
-    columns_format="%-36s %-10s %-12s %-24s %-18s %-14s %-s %-6s"
-    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Region", "Duration", "End")
+    columns_format="%-36s %-10s %-12s %-24s %-18s %-14s %-9s %-26s %-6s"
+    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Region", "Duration", "End", "Offering")
     for n in range(size):
         id=response.get('ReservedInstances')[n].get('ReservedInstancesId')
         count=response.get('ReservedInstances')[n].get('InstanceCount')
@@ -19,9 +19,10 @@ def list_reserved_instances(ec2, filters):
         scope=response.get('ReservedInstances')[n].get('Scope')
         region=response.get('ReservedInstances')[n].get('AvailabilityZone')
         duration=response.get('ReservedInstances')[n].get('Duration')
+        offering=response.get('ReservedInstances')[n].get('OfferingType')
         td=timedelta(seconds=int(duration))
         end=response.get('ReservedInstances')[n].get('End')
-        print columns_format % (id, count, type, product, scope, region, td.days, end)
+        print columns_format % (id, count, type, product, scope, region, td.days, end, offering)
         
 def main():
     parser = argparse.ArgumentParser(description='Show active reserved EC2 instances')
