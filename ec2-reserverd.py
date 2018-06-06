@@ -3,26 +3,29 @@
 import boto3
 import sys
 import argparse
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 def list_reserved_instances(ec2, filters):
     client = boto3.client('ec2')
     response = client.describe_reserved_instances(Filters=filters)
     size = len(response.get('ReservedInstances'))
-    columns_format="%-36s %-10s %-12s %-24s %-18s %-14s %-9s %-26s %-6s"
-    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Region", "Duration", "End", "Offering")
+    columns_format="%-36s %-10s %-12s %-24s %-18s %-14s %-10s %-9s %-26s %-6s"
+    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Region", "Duration", "Time Left", "End", "Offering")
     for n in range(size):
-        id=response.get('ReservedInstances')[n].get('ReservedInstancesId')
-        count=response.get('ReservedInstances')[n].get('InstanceCount')
-        type=response.get('ReservedInstances')[n].get('InstanceType')
-        product=response.get('ReservedInstances')[n].get('ProductDescription')
-        scope=response.get('ReservedInstances')[n].get('Scope')
-        region=response.get('ReservedInstances')[n].get('AvailabilityZone')
-        duration=response.get('ReservedInstances')[n].get('Duration')
-        offering=response.get('ReservedInstances')[n].get('OfferingType')
-        td=timedelta(seconds=int(duration))
-        end=response.get('ReservedInstances')[n].get('End')
-        print columns_format % (id, count, type, product, scope, region, td.days, end, offering)
+        id = response.get('ReservedInstances')[n].get('ReservedInstancesId')
+        count = response.get('ReservedInstances')[n].get('InstanceCount')
+        type = response.get('ReservedInstances')[n].get('InstanceType')
+        product = response.get('ReservedInstances')[n].get('ProductDescription')
+        scope = response.get('ReservedInstances')[n].get('Scope')
+        region = response.get('ReservedInstances')[n].get('AvailabilityZone')
+        duration = response.get('ReservedInstances')[n].get('Duration')
+        offering = response.get('ReservedInstances')[n].get('OfferingType')
+        td = timedelta(seconds=int(duration))
+        end = response.get('ReservedInstances')[n].get('End')
+        end_dt = datetime.strptime(str(end), "%Y-%m-%d %H:%M:%S+00:00")
+        now_dt = datetime.now()
+        delta = end_dt - now_dt
+        print columns_format % (id, count, type, product, scope, region, td.days, max(0, delta.days), end, offering)
         
 def main():
     parser = argparse.ArgumentParser(description='Show active reserved EC2 instances')
