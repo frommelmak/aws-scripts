@@ -114,7 +114,7 @@ def create_google_calendar_events(events, event_ids):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Show active reserved EC2 instances')
+    parser = argparse.ArgumentParser(description='Show reserved EC2 instances')
     parser.add_argument('-s', '--state', action='store',
                         choices=['payment-pending', 'active', 'payment-failed', 'retired'],
                         help="Filer result by reservation state.")
