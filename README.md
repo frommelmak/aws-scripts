@@ -84,7 +84,7 @@ optional arguments:
   -t TYPE, --type TYPE  Filer result by instance type.
 ```
 
-To use the Google calendar feature you just have to [enable the calendar API in your Google Account](https://console.developers.google.com) and create a calendar called aws in the [Google Calendar](http://calendar.google.com/). Then create the *OAuth client ID* credentials. Download the credentials file and save it as `client_secret.json` in the aws-scripts folder repo. When you run the script using the `--create-google-calendar-events` option for the first time, a web browser will be opened asking your to log with the Google account you want to use.
+To use the Google calendar feature you just have to [enable the calendar API in your Google Account](https://console.developers.google.com) and create a calendar called aws in the [Google Calendar](http://calendar.google.com/). Then create the *OAuth client ID* credentials. Download the credentials file and save it as `client_secret.json` in the aws-scripts folder repo. When you run the script using the `--create-google-calendar-events` option for the first time, a web browser will be opened asking your to login with the Google account you want to use.
 
 Then, whenever you buy new reservations on Amazon Web Services, you can add the new reservations in your calendar by just running the script.
 
