@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 import boto3
 import sys
-import argparse
 from datetime import date, datetime, timedelta
 import hashlib
+from apiclient.discovery import build
+from httplib2 import Http
+from oauth2client import file, client, tools
+import argparse
 
 def list_reserved_instances(ec2, filters):
     events = []
@@ -62,21 +65,9 @@ def list_reserved_instances(ec2, filters):
     
     return events, event_ids
 
-def create_google_calendar_events(events, event_ids):
-    from apiclient.discovery import build
-    from httplib2 import Http
-    from oauth2client import file, client, tools
+def create_events(service, events, event_ids):
     import datetime
-
-    # Setup the Calendar API
-    SCOPES = 'https://www.googleapis.com/auth/calendar'
-    store = file.Storage('credentials.json')
-    creds = store.get()
-    if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets('client_secret.json', SCOPES)
-        creds = tools.run_flow(flow, store)
-    service = build('calendar', 'v3', http=creds.authorize(Http()))
-
+    
     page_token = None
     while True:
       calendar_list = service.calendarList().list(pageToken=page_token).execute()
@@ -144,7 +135,16 @@ def main():
     events, event_ids = list_reserved_instances(ec2, filters)
     
     if arg.create_google_calendar_events:
-        create_google_calendar_events(events, event_ids)    
+        # Setup the Calendar API
+        SCOPES = 'https://www.googleapis.com/auth/calendar'
+        store = file.Storage('credentials.json')
+        creds = store.get()
+        if not creds or creds.invalid:
+            flow = client.flow_from_clientsecrets('client_secret.json', SCOPES)
+            flags = tools.argparser.parse_args(args=[])
+            creds = tools.run_flow(flow, store, flags)
+        service = build('calendar', 'v3', http=creds.authorize(Http()))
+        create_events(service, events, event_ids)
 
 if __name__ == '__main__':
     sys.exit(main())
