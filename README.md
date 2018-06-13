@@ -60,7 +60,7 @@ optional arguments:
                         is used by default
 ```
 
-ec2-reserverd.py
+ec2-reserved.py
 ----------------
 
 List details of all your Instance Reservations.
@@ -68,7 +68,7 @@ List details of all your Instance Reservations.
 You can also use the option `--create-google-calendar-events` to add the expiration date of the active reservations in your Google Calendar Account.
 
 ```
-usage: ec2-reserverd.py [-h]
+usage: ec2-reserved.py [-h]
                         [-s {payment-pending,active,payment-failed,retired}]
                         [--create-google-calendar-events] [-t TYPE]
 
