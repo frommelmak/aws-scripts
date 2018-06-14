@@ -7,6 +7,9 @@ argparse
 # ec2-instances.py
 paramiko
 
+# ec2-reserved.py
+google-api-python-client
+
 # ec2-snap-mgmt.py
 boto
 
