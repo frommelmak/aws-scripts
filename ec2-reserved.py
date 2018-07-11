@@ -9,7 +9,7 @@ from httplib2 import Http
 from oauth2client import file, client, tools
 import argparse
 
-def list_reserved_instances(ec2, filters):
+def list_reserved_instances(filters):
     events = []
     event_ids = []
     client = boto3.client('ec2')
@@ -131,8 +131,7 @@ def main():
     if arg.type and arg.create_google_calendar_events is False:
         filters.append({'Name': 'instance-type', 'Values': ["*" + arg.type + "*"]})
 
-    ec2 = boto3.resource('ec2')
-    events, event_ids = list_reserved_instances(ec2, filters)
+    events, event_ids = list_reserved_instances(filters)
     
     if arg.create_google_calendar_events:
         # Setup the Calendar API
