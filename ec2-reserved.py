@@ -11,19 +11,20 @@ import argparse
 
 def list_reserved_instances(filters):
     events = []
+    instances = []
     event_ids = []
     client = boto3.client('ec2')
     response = client.describe_reserved_instances(Filters=filters)
     size = len(response.get('ReservedInstances'))
     columns_format="%-36s %-10s %-12s %-24s %-18s %-14s %-10s %-9s %-26s %-6s"
-    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Region", "Duration", "Time Left", "End", "Offering")
+    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Zone", "Duration", "Time Left", "End", "Offering")
     for n in range(size):
         id = response.get('ReservedInstances')[n].get('ReservedInstancesId')
         count = response.get('ReservedInstances')[n].get('InstanceCount')
         type = response.get('ReservedInstances')[n].get('InstanceType')
         product = response.get('ReservedInstances')[n].get('ProductDescription')
         scope = response.get('ReservedInstances')[n].get('Scope')
-        region = response.get('ReservedInstances')[n].get('AvailabilityZone')
+        zone = response.get('ReservedInstances')[n].get('AvailabilityZone')
         duration = response.get('ReservedInstances')[n].get('Duration')
         offering = response.get('ReservedInstances')[n].get('OfferingType')
         td = timedelta(seconds=int(duration))
@@ -31,8 +32,23 @@ def list_reserved_instances(filters):
         end_dt = datetime.strptime(str(end), "%Y-%m-%d %H:%M:%S+00:00")
         now_dt = datetime.now()
         delta = end_dt - now_dt
-        print columns_format % (id, count, type, product, scope, region, td.days, max(0, delta.days), end, offering)
+        time_left = max(0, delta.days)
+        print columns_format % (id, count, type, product, scope, zone, td.days, time_left, end, offering)
         description="A purchased reservervation affecting to %s x %s instances is about to expire. Reservation id: %s" % (count, type, id)
+    
+        if time_left > 0:
+            state = 'active'
+        else:
+            state = 'retired'
+        
+        instance = {
+                    'scope': scope, 
+                    'zone': zone,
+                    'type': type,
+                    'state': state,
+                    'count': count
+        }
+        instances.append(instance)
         
         event_start = end_dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         event_end = (end_dt + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
@@ -63,7 +79,7 @@ def list_reserved_instances(filters):
         events.append(event)
         event_ids.append(sha_id)
     
-    return events, event_ids
+    return events, event_ids, instances
 
 def create_events(service, events, event_ids):
     import datetime
@@ -131,7 +147,66 @@ def main():
     if arg.type and arg.create_google_calendar_events is False:
         filters.append({'Name': 'instance-type', 'Values': ["*" + arg.type + "*"]})
 
-    events, event_ids = list_reserved_instances(filters)
+    events, event_ids, instances = list_reserved_instances(filters)
+
+    normalization_factor = {
+        'nano': 0.25,
+        'micro': 0.5,
+        'small': 1,
+        'medium': 2,
+        'large': 4,
+        'xlarge': 8,
+        '2xlarge': 16,
+        '8xlarge': 32,
+        '9xlarge': 64,
+        '10xlarge': 72,
+        '12xlarge': 96,
+        '16xlarge': 128,
+        '18xlarge': 144,
+        '24xlarge': 192,
+        '32xlarge': 256
+    }
+    
+    # Normalized Reservation Value (valor acumulado de size para cada size the cada scope)
+    region  = {}
+    zone = {}
+    for instance in instances:
+        instance_type, instance_size = instance['type'].split('.')
+        if instance['state']  == 'active':
+            if instance['scope'] == 'Region':
+                if instance_type not in region:
+                    region[instance_type] = { instance_size: instance['count']}
+                elif instance_size in region[instance_type]:
+                        region[instance_type][instance_size] += 1
+                else:
+                    region[instance_type][instance_size] = instance['count']
+            elif instance['scope'] == 'Availability Zone':
+                if instance_type not in zone:
+                    zone[instance_type] = {}
+                    zone[instance_type][instance['zone']] = { instance_size: instance['count'] }
+                elif instance_size in zone[instance_type]:
+                       zone[instance_type][instance['zone']][instance_size] += 1
+                else:
+                    zone[instance_type][instance['zone']][instance_size] = instance['count']
+
+    nrrs = 0    
+    nrrs_sum = 0
+    print ""
+    print "Summary"
+    print ""
+    print "  Active Regional Reserverd Instances (by type and size)"
+    for type in region:
+        print "    Instance Type: %s" % type
+        nrrs += nrrs
+        for size in region[type]:
+          # Normalized reserved region size (nrrs)
+          nrrs = normalization_factor[size] * region[type][size]
+          nrrs_sum = nrrs_sum + nrrs
+          print "      %s: %s x %s = %s" % (size, normalization_factor[size], region[type][size], nrrs)
+    
+    print ""
+    print "  Total (normalized): %s" % nrrs_sum
+    print ""
     
     if arg.create_google_calendar_events:
         # Setup the Calendar API

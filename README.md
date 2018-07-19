@@ -65,7 +65,9 @@ optional arguments:
 ec2-reserved.py
 ----------------
 
-List details of all your Instance Reservations.
+Lists details of all your Instance Reservations, including a summary of the regional active reservations by type and size.
+
+The summary also shows your reserved active capacity after apply the normalization factor. This is useful to compare the reserved capacity with the deployed in production one.
 
 You can also use the option `--create-google-calendar-events` to add the expiration date of the active reservations in your Google Calendar Account.
 
