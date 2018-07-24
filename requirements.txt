@@ -1,7 +1,7 @@
 # Install with: `pip install -r requirements.txt`
 
 # General
-boto3
+boto3>=1.6.3
 argparse
 
 # ec2-instances.py
@@ -9,6 +9,7 @@ paramiko
 
 # ec2-reserved.py
 google-api-python-client
+oauth2client
 
 # ec2-snap-mgmt.py
 boto
