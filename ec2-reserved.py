@@ -177,24 +177,25 @@ def main():
                 if instance_type not in region:
                     region[instance_type] = { instance_size: instance['count']}
                 elif instance_size in region[instance_type]:
-                        region[instance_type][instance_size] += 1
+                        region[instance_type][instance_size] += instance['count']
                 else:
                     region[instance_type][instance_size] = instance['count']
             elif instance['scope'] == 'Availability Zone':
                 if instance_type not in zone:
                     zone[instance_type] = {}
+                    zone[instance_type][instance['zone']] = {}
                     zone[instance_type][instance['zone']] = { instance_size: instance['count'] }
-                elif instance_size in zone[instance_type]:
-                       zone[instance_type][instance['zone']][instance_size] += 1
+                elif instance_size in zone[instance_type][instance['zone']]:
+                    zone[instance_type][instance['zone']][instance_size] += instance['count']
                 else:
                     zone[instance_type][instance['zone']][instance_size] = instance['count']
-
+    
     nrrs = 0    
     nrrs_sum = 0
     print ""
     print "Summary"
     print ""
-    print "  Active Regional Reserverd Instances (by type and size)"
+    print "  Active Standard Regional Reserverd Instances (by type and size)"
     for type in region:
         print "    Instance Type: %s" % type
         nrrs += nrrs
@@ -202,11 +203,30 @@ def main():
           # Normalized reserved region size (nrrs)
           nrrs = normalization_factor[size] * region[type][size]
           nrrs_sum = nrrs_sum + nrrs
-          print "      %s: %s x %s = %s" % (size, normalization_factor[size], region[type][size], nrrs)
+          print "      %s x %s (%s) = %s" % (region[type][size], size, normalization_factor[size], nrrs)
     
     print ""
-    print "  Total (normalized): %s" % nrrs_sum
+    print "  Total Regional (normalized): %s" % nrrs_sum
     print ""
+    print ""
+    
+    nrrs = 0    
+    nrrs_sum = 0
+    print "  Active Standard Zonal Reserverd Instances (by type, availability zone and size)"
+    for type in zone:
+        print "    Instance Type: %s" % type
+        nrrs += nrrs
+        for availability_zone in zone[type]:
+          print "      Availabilidy zone: %s" % availability_zone
+          for size in zone[type][availability_zone]:
+              nrrs = normalization_factor[size] * zone[type][availability_zone][size]
+              nrrs_sum = nrrs_sum + nrrs
+              print "        %s x %s (%s) = %s" % (zone[type][availability_zone][size], size, normalization_factor[size], nrrs)
+    
+    print ""
+    print "  Total Zonal (normalized): %s" % nrrs_sum
+    print ""
+    
     
     if arg.create_google_calendar_events:
         # Setup the Calendar API
