@@ -167,7 +167,7 @@ def main():
         '32xlarge': 256
     }
     
-    # Normalized Reservation Value (valor acumulado de size para cada size the cada scope)
+    # Normalized value for regional and zonal active reservations
     region  = {}
     zone = {}
     for instance in instances:
