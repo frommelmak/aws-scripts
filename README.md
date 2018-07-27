@@ -65,7 +65,7 @@ optional arguments:
 ec2-reserved.py
 ----------------
 
-Lists details of all your Instance Reservations, including a summary of the regional active reservations by type and size.
+Lists details of all your Instance Reservations, including a summary of the active reservations by type and size.
 
 The summary also shows your reserved active capacity after apply the normalization factor. This is useful to compare the reserved capacity with the deployed in production.
 
