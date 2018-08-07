@@ -1,20 +1,20 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name = "aws-scripts",
-    version = "0.0.1",
+    version = "0.0.6",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
-    description = ("Some useful AWS scripts I use from time to time"),
+    description = "Some useful AWS scripts I use from time to time",
     license = "MIT",
     keywords = "aws amazon-web-services ec2-instance google-calendar-synchronization amazon",
-    url = "http://packages.python.org/aws-scripts",
+    url = "http://github.com/frommelmak/aws-scripts",
     install_requires=['boto3>=1.6.3',
-                      'argparse>=',
+                      'argparse',
                       'paramiko>=1.15.2',
                       'google-api-python-client>=1.7.3',
                       'oauth2client>=4.1.2',
@@ -22,7 +22,8 @@ setup(
                       'sshutil>=0.9.7',
                       'botocore>=1.9.3',
                       ],
-    packages=['aws-scripts', 'tests'],
+    python_requires='>=2.7, <3',
+    packages=find_packages(exclude=['docs', 'tests*']),
     scripts = ['aws-scripts/ec2-instances.py',
                'aws-scripts/ec2-reserved.py',
                'aws-scripts/ec2-elb.py',
@@ -35,9 +36,10 @@ setup(
                'aws-scripts/lifecycle-hook-worker.py',
               ],
     long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     classifiers=[
-        "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
         "License :: OSI Approved :: MIT License",
+        'Programming Language :: Python :: 2.7',
     ],
 )
