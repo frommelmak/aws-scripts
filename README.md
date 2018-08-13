@@ -9,10 +9,10 @@ All the scripts relies on [Boto](http://aws.amazon.com/sdkforpython/), a Python 
 
 So, to use these scripts, you need to install Boto and provide your AWS credentinals:
 
-To install Boto and all the required Python packages just clone this repository and type:
+To install aws-scripts and all the required Python packages just type:
 
 ```
-pip install -r requirements.txt
+pip install aws-scripts 
 ```
 
 If dependencies are already satisfied, nothing will be installed.
