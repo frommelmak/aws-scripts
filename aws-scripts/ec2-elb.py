@@ -17,7 +17,7 @@ def list_elb(ec2):
       print u"%s" % load_balancer_name
       for instance in range(len(response.get('LoadBalancerDescriptions')[elb].get('Instances'))):
          instance_id = instance_state.get('InstanceStates')[instance].get('InstanceId')
-         print u"  └── %-20s (%s) Status: %s, Description: %s" % (
+         print u"  \u2514\u2500\u2500 %-20s (%s) Status: %s, Description: %s" % (
                                                                instance_id,
                                                                get_tag(ec2, instance_id),
                                                                instance_state.get('InstanceStates')[instance].get('State'),
