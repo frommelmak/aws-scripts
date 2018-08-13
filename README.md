@@ -1,3 +1,4 @@
+[![PyPI](https://img.shields.io/pypi/v/aws-scripts.svg)](https://pypi.org/project/aws-scripts/)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
 
 aws-scripts
