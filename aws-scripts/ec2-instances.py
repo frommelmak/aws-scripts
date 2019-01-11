@@ -15,7 +15,10 @@ def list_instances(Filter, RegionName, InstanceIds):
    name = {}  
    for i in instances:
       try:
-         name = (item for item in i.tags if item["Key"] == "Name" ).next()
+         if i.tags is not None:
+           name = (item for item in i.tags if item["Key"] == "Name").next()
+         else:
+           name['Value'] = ''
       except StopIteration:
          name['Value'] = ''
       
