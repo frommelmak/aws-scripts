@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 import operator
 
-def dump(host, database, username, password, out):
+def dump(host, database, exclude_collection, username, password, out):
 
     if username and password:
         auth_str= "--username %s --password %s" % (username, password)
