@@ -17,6 +17,8 @@ def dump(host, database, username, password, out):
 
     if database:
         db_str="--db %s" % (database)
+        if exclude_collection:
+            db_str="--db %s --excludeCollection %s" % (database, excludecollection)
     else:
         db_str=""
 
@@ -35,6 +37,8 @@ def main():
                         help="Mongodb host: <hostname>:<port>." )
     parser.add_argument('-d', '--database',
                         help="The database to backup (all if not provided)")
+    parser.add_argument('-e', '--excludecollection'
+                        help="The collection to exclude from backup. Requires '-d' option")
     parser.add_argument('-o', '--out', default='dump',
                         help="The output directory for dumped files")
     parser.add_argument('-n', '--number', type=int, default=7,
