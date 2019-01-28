@@ -37,7 +37,7 @@ def main():
                         help="Mongodb host: <hostname>:<port>." )
     parser.add_argument('-d', '--database',
                         help="The database to backup (all if not provided)")
-    parser.add_argument('-e', '--excludecollection'
+    parser.add_argument('-e', '--excludecollection',
                         help="The collection to exclude from backup. Requires '-d' option")
     parser.add_argument('-o', '--out', default='dump',
                         help="The output directory for dumped files")
