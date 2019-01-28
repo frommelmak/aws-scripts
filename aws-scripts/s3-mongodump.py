@@ -58,6 +58,9 @@ def main():
    
     if arg.prefix is not None and arg.prefix[-1:] is "/":
        arg.prefix="%s" % arg.prefix[:-1]   
+
+    if arg.exclude_collection and not arg.database:
+       parser.error("--exclude_collection requires --database")
  
     # mongodump
     dump(arg.host, arg.database, arg.exclude_collection ,arg.user, arg.password, arg.out)
