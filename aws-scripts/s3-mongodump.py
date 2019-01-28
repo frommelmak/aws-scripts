@@ -60,7 +60,7 @@ def main():
        arg.prefix="%s" % arg.prefix[:-1]   
  
     # mongodump
-    dump(arg.host, arg.database, arg.user, arg.password, arg.out)
+    dump(arg.host, arg.database, arg.exclude_collection ,arg.user, arg.password, arg.out)
 
     # List and get the number of files in the bucket
     num_files=0
