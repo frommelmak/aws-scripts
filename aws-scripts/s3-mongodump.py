@@ -23,7 +23,7 @@ def dump(host, database, exclude_collection, username, password, out):
         db_str=""
 
     mongodump_cmd="mongodump --host %s -o %s %s %s" % (host,out,auth_str,db_str)
-    print mongodump_cmd 
+    print mongodump_cmd
     mongodump_output = subprocess.check_output(mongodump_cmd, shell=True)
     print mongodump_output
 
@@ -55,37 +55,33 @@ def main():
 
     if arg.password and not arg.user:
            parser.error("You provided a password but not a user")
-   
+
     if arg.prefix is not None and arg.prefix[-1:] is "/":
-       arg.prefix="%s" % arg.prefix[:-1]   
+       arg.prefix="%s" % arg.prefix[:-1]
 
     if arg.exclude_collection and not arg.database:
        parser.error("--exclude_collection requires --database")
- 
+
     # mongodump
     dump(arg.host, arg.database, arg.exclude_collection ,arg.user, arg.password, arg.out)
 
     # List and get the number of files in the bucket
-    num_files=0
     s3 = boto3.resource('s3')
     if arg.prefix:
         objects=s3.Bucket(name=arg.bucket).objects.filter(Prefix=arg.prefix)
-        num_files=-1
     else:
         objects=s3.Bucket(name=arg.bucket).objects.filter()
-        num_files=0
 
     print "Filelist on the S3 bucket:"
     filedict={}
     for object in objects:
-        print (object.key)
-        filedict.update({object.key: object.last_modified})
-        num_files=num_files + 1
+        if object.key.startswith(arg.prefix + '/' + arg.database):
+          print (object.key)
+          filedict.update({object.key: object.last_modified})
 
     # create new tarball
-    num_files=num_files+1
     print "Creating the tarball:"
-    tarball_name="%s-%s.tar.gz" % (arg.out, datetime.strftime(datetime.now(),'%Y-%m-%d-%H%M%S')) 
+    tarball_name="%s-%s.tar.gz" % (arg.out, datetime.strftime(datetime.now(),'%Y-%m-%d-%H%M%S'))
     tarball_cmd="tar -czvf %s %s" % (tarball_name, arg.out)
     tarball_output = subprocess.check_output(tarball_cmd, shell=True)
     print tarball_output
@@ -104,11 +100,11 @@ def main():
     print "Removing temporary local tarball..."
     os.remove(tarball_name)
 
-    # keep de the last N dumps on s3: removes the oldest ones 
+    # keep de the last N dumps on s3: removes the oldest ones
     # remove the first element of array if prefix (dirname) was used
     prefix= arg.prefix + "/"
-    if arg.prefix:
-       del filedict[arg.prefix + "/"]
+    #if arg.prefix:
+    #   del filedict[arg.prefix + "/"]
     sorted_filedict=sorted(filedict.items(), key=operator.itemgetter(1))
     for item in sorted_filedict[0:len(sorted_filedict)-arg.number]:
         print "Deleting file from S3: %s" % item[0]
