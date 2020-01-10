@@ -52,7 +52,7 @@ def execute_cmd(host,user,cmd):
        return "Authentication Error trying to connect into the host %s with the user %s. Plese review your keys" % (host, user), e 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Shows a list with your EC2 instances, then you can execute remote commands on those instances.')
     parser.add_argument('-n', '--name',
                         help="Filter result by name.")
     parser.add_argument('-t', '--type',
@@ -61,7 +61,7 @@ def main():
                         help="Filter result by status." )
     parser.add_argument('-l', '--id_list',
                         nargs='+', type=str,
-                        help="Provide a list of InstanceIds." )
+                        help="Do not filter the result. Provide a InstanceIds list instead." )
     parser.add_argument('-e', '--execute',
                         help="Execute a command on instances")
     parser.add_argument('-r', '--region',
