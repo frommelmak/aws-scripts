@@ -33,7 +33,7 @@ region=xx-xxxx-x
 ec2-instances.py
 ----------------
 
-List the EC2 instances including the Name Tag, IP, type, zone, vpc, ID and the status.
+Lists the EC2 instances including the Name Tag, IP, type, zone, vpc, ID and the status.
 
 You can filter the result by name, type and/or status. Or you can provide a list of instance IDs instead.
 
@@ -53,7 +53,7 @@ optional arguments:
   -s STATUS, --status STATUS
                         Filter result by status.
   -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
-                        Provide a list of InstanceIds.
+                        Do not filter the result. Provide a InstanceIds list instead.
   -e EXECUTE, --execute EXECUTE
                         Execute a command on instances
   -r REGION, --region REGION
