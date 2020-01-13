@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws-scripts",
-    version = "0.0.14",
+    version = "0.0.16",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
@@ -22,7 +22,7 @@ setup(
                       'sshutil>=0.9.7',
                       'botocore>=1.9.3',
                       ],
-    python_requires='>=2.7, <3',
+    python_requires='>=2.7',
     packages=find_packages(exclude=['docs', 'tests*']),
     scripts = ['aws-scripts/ec2-instances.py',
                'aws-scripts/ec2-reserved.py',
@@ -41,5 +41,6 @@ setup(
         "Topic :: Utilities",
         "License :: OSI Approved :: MIT License",
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
     ],
 )

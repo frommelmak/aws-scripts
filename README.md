@@ -249,7 +249,7 @@ lifecycle-hook-worker.py
 
 As its own name says, this worker is designed to use auto scaling [lifecycle hooks](http://docs.aws.amazon.com/autoscaling/latest/userguide/lifecycle-hooks.html).
 
-The process looks for incoming messages into the SQS queue asociated with the autoscaling group. Then, when a message comes for the instance, it is consumed and the associated custom action is triggered. Finally, using the lifecyle action token, the worker completes the autoscaling action going on with the launch or ending the instance action.
+The process looks for incoming messages into the SQS queue associated with the autoscaling group. Then, when a message comes for the instance, it is consumed and the associated custom action is triggered. Finally, using the lifecycle action token, the worker completes the autoscaling action going on with the launch or ending the instance action.
 
 ```
 usage: lifecycle-hook-worker.py [-h] -q QUEUE -s {LAUNCHING,TERMINATING} -g
