@@ -4,7 +4,7 @@ import boto3
 import sys
 import argparse
 import ast
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from subprocess import call
 import time
 from datetime import datetime
@@ -35,7 +35,7 @@ def sqs_delete_msg(qname, receipt_handle):
 
 def get_ec2instanceid():
     try:
-       response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id')
+       response = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id')
     except:
        sys.exit("%s I am not running in EC2. Aborting!!" % datetime.now().strftime('%H:%M:%S %D'))
 
@@ -67,22 +67,22 @@ def main():
 
     cmd_args = shlex.split(arg.execute)
 
-    print ("%s Getting EC2 instance ID") % datetime.now().strftime('%H:%M:%S %D')
+    print(("%s Getting EC2 instance ID") % datetime.now().strftime('%H:%M:%S %D'))
     ec2instanceid = get_ec2instanceid()
-    print ("%s Listening for %s SQS messages using long polling") % (datetime.now().strftime('%H:%M:%S %D'), ec2instanceid)
+    print(("%s Listening for %s SQS messages using long polling") % (datetime.now().strftime('%H:%M:%S %D'), ec2instanceid))
 
     while 1:
        sqs_msg, sqs_receipt_handle = sqs_get_msg(arg.queue)
        if sqs_msg['LifecycleTransition'] == "autoscaling:TEST_NOTIFICATION":
-          print ("%s Tests message consumed") % datetime.now().strftime('%H:%M:%S %D')
+          print(("%s Tests message consumed") % datetime.now().strftime('%H:%M:%S %D'))
        elif sqs_msg['LifecycleTransition'] == False:
-          print ("%s There are no messages in the queue. Sleeping and trying again") % datetime.now().strftime('%H:%M:%S %D')
+          print(("%s There are no messages in the queue. Sleeping and trying again") % datetime.now().strftime('%H:%M:%S %D'))
        elif (sqs_msg['LifecycleTransition'] == state) and (sqs_msg['EC2InstanceId'] == ec2instanceid):
           sqs_delete_msg(arg.queue, sqs_receipt_handle)
-          print "%s %s hook message received" % (datetime.now().strftime('%H:%M:%S %D'), arg.state)
-          print "%s Executing filepath" % datetime.now().strftime('%H:%M:%S %D')
+          print("%s %s hook message received" % (datetime.now().strftime('%H:%M:%S %D'), arg.state))
+          print("%s Executing filepath" % datetime.now().strftime('%H:%M:%S %D'))
           call(cmd_args)
-          print "%s Completing lifecyle action" % datetime.now().strftime('%H:%M:%S %D')
+          print("%s Completing lifecyle action" % datetime.now().strftime('%H:%M:%S %D'))
           as_client = boto3.client('autoscaling')
           response = as_client.complete_lifecycle_action(
              LifecycleHookName=arg.hookName,
