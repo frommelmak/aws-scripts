@@ -54,6 +54,9 @@ optional arguments:
                         Filter result by status.
   -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
                         Do not filter the result. Provide a InstanceIds list instead.
+  -i IGNORE, --ignore IGNORE
+                        Do not show hosts lines containing the "IGNORE"
+                        pattern in the tag Name
   -e EXECUTE, --execute EXECUTE
                         Execute a command on instances
   -r REGION, --region REGION

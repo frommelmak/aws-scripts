@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws-scripts",
-    version = "0.0.13",
+    version = "0.0.14",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
@@ -15,6 +15,7 @@ setup(
     url = "http://github.com/frommelmak/aws-scripts",
     install_requires=['boto3>=1.6.3',
                       'argparse',
+                      're',
                       'paramiko>=1.15.2',
                       'google-api-python-client>=1.7.3',
                       'oauth2client>=4.1.2',
