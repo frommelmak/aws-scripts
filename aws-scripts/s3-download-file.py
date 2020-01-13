@@ -9,12 +9,12 @@ def download_file(bucket, objectkey, filepath ):
     s3_client = boto3.client('s3')
     try:
       s3_client.download_file(bucket, objectkey, filepath)
-      print "Requested file saved at: %s" % filepath
+      print("Requested file saved at: %s" % filepath)
     except botocore.exceptions.ClientError as e:
       if e.response['ResponseMetadata']['HTTPStatusCode'] == 404:
-         print "Requested file: %s/%s (not found)" % (bucket, objectkey)
+         print("Requested file: %s/%s (not found)" % (bucket, objectkey))
       else:
-         print "Error Msg: %s" % e.response['Error']['Message']
+         print("Error Msg: %s" % e.response['Error']['Message'])
 
 def main():
     parser = argparse.ArgumentParser(description='Donwload file from AWS S3')
