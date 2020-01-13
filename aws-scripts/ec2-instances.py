@@ -10,14 +10,14 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
    ec2 = boto3.resource('ec2', region_name=RegionName)
    instances = ec2.instances.filter(Filters=Filter, InstanceIds=InstanceIds)
    columns_format="%-3s %-26s %-15s %-15s %-20s %-10s %-11s %-12s %-16s"
-   print columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "Zone","VPC", "Status")
+   print(columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "Zone","VPC", "Status"))
    num = 1
    hosts = [] 
    name = {}  
    for i in instances:
       try:
          if i.tags is not None:
-           name = (item for item in i.tags if item["Key"] == "Name").next()
+           name = next((item for item in i.tags if item["Key"] == "Name"))
          else:
            name['Value'] = ''
       except StopIteration:
@@ -29,7 +29,7 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
           num = num + 1
       else:
           #IgnorePattern Not Found
-          print columns_format % (
+          print(columns_format % (
                                    num,
                                    name['Value'], 
                                    i.public_ip_address,
@@ -39,7 +39,7 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
                                    i.placement['AvailabilityZone'],
                                    i.vpc_id,
                                    i.state['Name']
-                                 )
+                                 ))
           num = num + 1
           item={'id': i.id, 'ip': i.public_ip_address, 'hostname': name['Value'], 'status': i.state['Name'],}
           hosts.append(item)
@@ -55,7 +55,7 @@ def execute_cmd(host,user,cmd):
        stderr=stderr.read()
        ssh.close()
        return stdout,stderr
-    except paramiko.AuthenticationException, e:
+    except paramiko.AuthenticationException as e:
        return "Authentication Error trying to connect into the host %s with the user %s. Plese review your keys" % (host, user), e 
 
 def main():
@@ -114,17 +114,17 @@ def main():
     if arg.execute:
        for item in hosts:
           names = names + " " + item["hostname"] + "(" + item["id"] + ")"
-       print "\nCommand to execute: %s" % arg.execute
-       print "Executed by: %s" % arg.user
-       print "Hosts list: %s\n" % names 
+       print("\nCommand to execute: %s" % arg.execute)
+       print("Executed by: %s" % arg.user)
+       print("Hosts list: %s\n" % names) 
        for item in hosts:
           if item["status"] == 'running':
-             print "::: %s (%s)" % (item["hostname"], item["id"])
+             print("::: %s (%s)" % (item["hostname"], item["id"]))
              stdout,stderr = execute_cmd(item["ip"], arg.user, arg.execute)
-             print stdout 
-             print stderr
+             print(stdout.decode()) 
+             print(stderr.decode())
           else:
-             print "::: %s (%s) is not running (command execution skiped)" % (item["hostname"], item["id"])
+             print("::: %s (%s) is not running (command execution skiped)" % (item["hostname"], item["id"]))
 
 if __name__ == '__main__':
     sys.exit(main())
