@@ -23,9 +23,9 @@ def dump(host, database, exclude_collection, username, password, out):
         db_str=""
 
     mongodump_cmd="mongodump --host %s -o %s %s %s" % (host,out,auth_str,db_str)
-    print mongodump_cmd
+    print(mongodump_cmd)
     mongodump_output = subprocess.check_output(mongodump_cmd, shell=True)
-    print mongodump_output
+    print(mongodump_output)
 
 def main():
     parser = argparse.ArgumentParser(description='A tool to make mongodb backups on Amazon s3')
@@ -72,32 +72,32 @@ def main():
     else:
         objects=s3.Bucket(name=arg.bucket).objects.filter()
 
-    print "Filelist on the S3 bucket:"
+    print("Filelist on the S3 bucket:")
     filedict={}
     for object in objects:
         if object.key.startswith(arg.prefix + '/' + arg.database):
-          print (object.key)
+          print((object.key))
           filedict.update({object.key: object.last_modified})
 
     # create new tarball
-    print "Creating the tarball:"
+    print("Creating the tarball:")
     tarball_name="%s-%s.tar.gz" % (arg.out, datetime.strftime(datetime.now(),'%Y-%m-%d-%H%M%S'))
     tarball_cmd="tar -czvf %s %s" % (tarball_name, arg.out)
     tarball_output = subprocess.check_output(tarball_cmd, shell=True)
-    print tarball_output
+    print(tarball_output)
 
     # remove dumped files
-    print "Removing temporary dump files..."
+    print("Removing temporary dump files...")
     shutil.rmtree(arg.out)
 
     # upload the new tarball to s3
     remote_file="%s/%s" % (arg.prefix,os.path.basename(tarball_name))
-    print "Uploading %s to Amazon S3..." % tarball_name
+    print("Uploading %s to Amazon S3..." % tarball_name)
     s3_client = boto3.client('s3')
     s3.meta.client.upload_file(tarball_name, arg.bucket, remote_file)
 
     # remove temporary tarball
-    print "Removing temporary local tarball..."
+    print("Removing temporary local tarball...")
     os.remove(tarball_name)
 
     # keep de the last N dumps on s3: removes the oldest ones
@@ -105,9 +105,9 @@ def main():
     prefix= arg.prefix + "/"
     #if arg.prefix:
     #   del filedict[arg.prefix + "/"]
-    sorted_filedict=sorted(filedict.items(), key=operator.itemgetter(1))
+    sorted_filedict=sorted(list(filedict.items()), key=operator.itemgetter(1))
     for item in sorted_filedict[0:len(sorted_filedict)-arg.number]:
-        print "Deleting file from S3: %s" % item[0]
+        print("Deleting file from S3: %s" % item[0])
         object = s3.Object(arg.bucket, item[0]).delete()
 
 if __name__ == '__main__':
