@@ -2,20 +2,33 @@
 import sys
 import argparse
 import boto3
-import urllib2
+try:
+    import urllib2
+except ImportError:
+    import urllib.request, urllib.error, urllib.parse
 import time
 from datetime import datetime
 import socket
 
 def get_public_dns_hostname():
     # curl http://169.254.169.254/latest/meta-data/public-hostname
-    response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-hostname')
+    try:
+        # if python 2.x
+        response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/public-hostname')
+    except:
+        # if python3.x
+        response = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/public-hostname')
     public_dns = response.read()
     return public_dns
 
 def get_private_ip():
     # curl http://169.254.169.254/latest/meta-data/local-ipv4
-    response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4')
+    try:
+        # if python 2.x
+        response = urllib2.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4')
+    except:
+        response = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/local-ipv4')
+    
     private_ip = response.read()
     return private_ip
 
@@ -51,7 +64,7 @@ def del_hostname_record(HostedZoneId, public_dns, fqdn, private_ip):
        time.sleep( 5 )
        response = client.get_change(Id=idstring)
     else:
-       print response.get('ChangeInfo').get('Status')
+       print(response.get('ChangeInfo').get('Status'))
        return
 
 def main():
