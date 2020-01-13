@@ -17,7 +17,7 @@ def list_reserved_instances(filters):
     response = client.describe_reserved_instances(Filters=filters)
     size = len(response.get('ReservedInstances'))
     columns_format="%-36s %-10s %-12s %-24s %-18s %-14s %-10s %-9s %-26s %-6s"
-    print columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Zone", "Duration", "Time Left", "End", "Offering")
+    print(columns_format % ("Reserved Id", "Instances", "Type", "Product Description", "Scope", "Zone", "Duration", "Time Left", "End", "Offering"))
     for n in range(size):
         id = response.get('ReservedInstances')[n].get('ReservedInstancesId')
         count = response.get('ReservedInstances')[n].get('InstanceCount')
@@ -33,7 +33,7 @@ def list_reserved_instances(filters):
         now_dt = datetime.now()
         delta = end_dt - now_dt
         time_left = max(0, delta.days)
-        print columns_format % (id, count, type, product, scope, zone, td.days, time_left, end, offering)
+        print(columns_format % (id, count, type, product, scope, zone, td.days, time_left, end, offering))
         description="A purchased reservervation affecting to %s x %s instances is about to expire. Reservation id: %s" % (count, type, id)
     
         if time_left > 0:
@@ -53,7 +53,7 @@ def list_reserved_instances(filters):
         event_start = end_dt.strftime("%Y-%m-%dT%H:%M:%S+00:00")
         event_end = (end_dt + timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S+00:00")
         m = hashlib.sha224()
-        m.update(id)
+        m.update(id.encode())
         sha_id = m.hexdigest()
         event = {
           'id': sha_id,
@@ -107,15 +107,15 @@ def create_events(service, events, event_ids):
         break
     
     if len(events) >= 1:
-        print "Creating %s events in the aws Calendar of your Google Account" % len(events)
+        print("Creating %s events in the aws Calendar of your Google Account" % len(events))
     
     n=0
     for id in event_ids :
         if id in g_event_ids:
-            print "The event: %s is already scheduled. Nothing to do..." % events[n]['id']
+            print("The event: %s is already scheduled. Nothing to do..." % events[n]['id'])
         else:
             event = service.events().insert(calendarId=calendar_id, body=events[n]).execute()
-            print "Event created: %s" % event.get('htmlLink')
+            print("Event created: %s" % event.get('htmlLink'))
         n += 1
 
 
@@ -193,40 +193,40 @@ def main():
     
     nrrs = 0    
     nrrs_sum = 0
-    print ""
-    print "Summary"
-    print ""
-    print "  Active Standard Regional Reserverd Instances (by type and size)"
+    print("")
+    print("Summary")
+    print("")
+    print("  Active Standard Regional Reserverd Instances (by type and size)")
     for type in region:
-        print "    Instance Type: %s" % type
+        print("    Instance Type: %s" % type)
         nrrs += nrrs
         for size in region[type]:
           # Normalized reserved region size (nrrs)
           nrrs = normalization_factor[size] * region[type][size]
           nrrs_sum = nrrs_sum + nrrs
-          print "      %s x %s (%s) = %s" % (region[type][size], size, normalization_factor[size], nrrs)
+          print("      %s x %s (%s) = %s" % (region[type][size], size, normalization_factor[size], nrrs))
     
-    print ""
-    print "  Total Regional (normalized): %s" % nrrs_sum
-    print ""
-    print ""
+    print("")
+    print("  Total Regional (normalized): %s" % nrrs_sum)
+    print("")
+    print("")
     
     nrrs = 0    
     nrrs_sum = 0
-    print "  Active Standard Zonal Reserverd Instances (by type, availability zone and size)"
+    print("  Active Standard Zonal Reserverd Instances (by type, availability zone and size)")
     for type in zone:
-        print "    Instance Type: %s" % type
+        print("    Instance Type: %s" % type)
         nrrs += nrrs
         for availability_zone in zone[type]:
-          print "      Availabilidy zone: %s" % availability_zone
+          print("      Availabilidy zone: %s" % availability_zone)
           for size in zone[type][availability_zone]:
               nrrs = normalization_factor[size] * zone[type][availability_zone][size]
               nrrs_sum = nrrs_sum + nrrs
-              print "        %s x %s (%s) = %s" % (zone[type][availability_zone][size], size, normalization_factor[size], nrrs)
+              print("        %s x %s (%s) = %s" % (zone[type][availability_zone][size], size, normalization_factor[size], nrrs))
     
-    print ""
-    print "  Total Zonal (normalized): %s" % nrrs_sum
-    print ""
+    print("")
+    print("  Total Zonal (normalized): %s" % nrrs_sum)
+    print("")
     
     
     if arg.create_google_calendar_events:
