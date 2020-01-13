@@ -15,7 +15,6 @@ setup(
     url = "http://github.com/frommelmak/aws-scripts",
     install_requires=['boto3>=1.6.3',
                       'argparse',
-                      're',
                       'paramiko>=1.15.2',
                       'google-api-python-client>=1.7.3',
                       'oauth2client>=4.1.2',
