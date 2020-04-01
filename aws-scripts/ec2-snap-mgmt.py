@@ -9,10 +9,10 @@ def snap_x_vol(owner_id):
     snapshots = conn.get_all_snapshots(owner=owner_id)
     volumes = conn.get_all_volumes()
     for v in volumes:
-        print "- %s" % (v.id)
+        print ("- %s" % (v.id))
         for s in snapshots:
             if s.volume_id == v.id:
-                print "   \_ %s, start_time: %s" % (s.id, s.start_time)
+                print ("   \_ %s, start_time: %s" % (s.id, s.start_time))
 
 # List all the snapshots for every image
 def snap_x_ami(owner_id):
@@ -20,9 +20,9 @@ def snap_x_ami(owner_id):
     images = conn.get_all_images(owners=owner_id)
     snapshots = conn.get_all_snapshots(owner=owner_id)
     for i in images:
-        print "- %s (%s)" % (i.id, i.name)
+        print ("- %s (%s)" % (i.id, i.name))
         for device in i.block_device_mapping:
-            print "   \_ %s (%s)" % (device, i.block_device_mapping[device].snapshot_id)
+            print ("   \_ %s (%s)" % (device, i.block_device_mapping[device].snapshot_id))
 
 # Find orphan snapshots (snapshots of non-existeng volumnes and snapshots without ami)
 def orphan_snapshots(owner_id):
@@ -31,14 +31,14 @@ def orphan_snapshots(owner_id):
     volumes = conn.get_all_volumes()
     images = conn.get_all_images(owners=owner_id)
     for s in snapshots:
-        print "- %s" % (s.id)
+        print ("- %s" % (s.id))
         for v in volumes:
             if s.volume_id == v.id:
-                print "   \_(volume %s)" % (v.id)
+                print ("   \_(volume %s)" % (v.id))
         for i in images:
             for dev in i.block_device_mapping:
                 if s.id == i.block_device_mapping[dev].snapshot_id:
-                    print "   \_(ami %s) %s" % (i.id, dev)
+                    print ("   \_(ami %s) %s" % (i.id, dev))
         
 def main():
     parser = argparse.ArgumentParser()
