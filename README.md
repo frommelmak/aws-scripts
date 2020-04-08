@@ -96,7 +96,7 @@ To use the Google calendar feature you just have to [enable the calendar API in 
 
 Then, whenever you buy new reservations on Amazon Web Services, you can add the new reservations in your calendar by just running the script.
 
-ec2-elb.py
+ec2-ebs.py
 ----------
 Lists the EC2 EBS volumes including the Name Tag, size, device, ID, attached instance ID, Attached instance Tag Name, type, IOPS, zone and status.
 
