@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws-scripts",
-    version = "0.0.18",
+    version = "0.0.19",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
@@ -27,6 +27,7 @@ setup(
     scripts = ['aws-scripts/ec2-instances.py',
                'aws-scripts/ec2-reserved.py',
                'aws-scripts/ec2-elb.py',
+               'aws-scripts/ec2-ebs.py',
                'aws-scripts/ec2-snap-mgmt.py',
                'aws-scripts/s3-mongodump.py',
                'aws-scripts/rds-instances.py',
