@@ -100,7 +100,7 @@ ec2-ebs.py
 ----------
 Lists the EC2 EBS volumes including the Name Tag, size, device, ID, attached instance ID, Attached instance Tag Name, type, IOPS, zone and status.
 
-You can filter the result by tyoe, status and Tag name.
+You can filter the result by type, status and Tag name.
 
 The '-h' option shows you how to use the available options.
 
