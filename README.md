@@ -98,6 +98,28 @@ Then, whenever you buy new reservations on Amazon Web Services, you can add the 
 
 ec2-elb.py
 ----------
+Lists the EC2 EBS volumes including the Name Tag, size, device, ID, attached instance ID, Attached instance Tag Name, type, IOPS, zone and status.
+
+You can filter the result by tyoe, status and Tag name.
+
+The '-h' option shows you how to use the available options.
+
+```
+usage: ec2-ebs.py [-h] [-n NAME] [-t {gp2,io1,st1,sc1,standard}] [-s {creating,available,in-use,deleting,deleted,error}]
+
+List all the Elastic Block Storage volumes
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Filter result by name.
+  -t {gp2,io1,st1,sc1,standard}, --type {gp2,io1,st1,sc1,standard}
+                        Filer result by type.
+  -s {creating,available,in-use,deleting,deleted,error}, --status {creating,available,in-use,deleting,deleted,error}
+                        Filter result by status.
+```
+
+ec2-elb.py
+----------
 
 Lists all your Elastic Load Balancers and his related instances.
 
