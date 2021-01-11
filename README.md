@@ -170,7 +170,7 @@ Two methods are supported: dump and snapshot.
 - For the first one It uses `mongodump` to perform a binary backup of your local or remote MongoDB instance. The dumped files are compressed in a tarball file and uploaded to a Amazon S3 bucket.
 - For the snapshot method, you can provide the data and / or the journal volumes and the script automatically will lock the database and will suspend all the writes during the backup process to ensure the consistency of the backup if required.
 
-For both methods, you can specify the number of copies to retain in the bucket or in the EC2 snapshot area. The oldest ones will be automatically removed.
+For the dump method, you can specify the number of copies to retain in the bucket or in the EC2 snapshot area. The oldest ones will be automatically removed.
 
 ```
 usage: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
