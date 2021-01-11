@@ -173,27 +173,36 @@ Two methods are supported: dump and snapshot.
 For the dump method, you can specify the number of copies to retain in the bucket or in the EC2 snapshot area. The oldest ones will be automatically removed.
 
 ```
-usage: s3-mongodump.py [-h] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE]
-                       [-o OUT] [-n NUMBER] -b BUCKET [-P PREFIX]
+usage: mongodb-backup.py [-h] [-m {dump,snapshot}] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE] [-e EXCLUDE_COLLECTION] [-o OUT] [-n NUMBER] [-b BUCKET] [-P PREFIX] [-v VOLUME_ID [VOLUME_ID ...]]
+                         [--no_journal] [-r REGION]
 
-A tool to make mongodb backups on Amazon s3
+A tool to make mongodb backups on Amazon
 
 optional arguments:
   -h, --help            show this help message and exit
+  -m {dump,snapshot}, --method {dump,snapshot}
+                        Backup method. Dump if none is provided
   -u USER, --user USER  Mongodb user (optional)
   -p PASSWORD, --password PASSWORD
                         Mongodb password (optional)
-  -H HOST, --host HOST  Mongodb host: <hostname>:<port>.
+  -H HOST, --host HOST  Mongodb host: <hostname>:<port>. By default: localhost:27017
   -d DATABASE, --database DATABASE
-                        The database to backup (all if not provided)
-  -o OUT, --out OUT     The output directory for dumped files
+                        For the dump method: The database to backup (all if not provided)
+  -e EXCLUDE_COLLECTION, --exclude_collection EXCLUDE_COLLECTION
+                        For the dump method: The collection to exclude from backup. Requires '-d' option
+  -o OUT, --out OUT     For the dump method: The output directory for dumped files
   -n NUMBER, --number NUMBER
-                        Number of copies to retain in the S3 bucket
+                        Number of copies to retain
   -b BUCKET, --bucket BUCKET
-                        Amazon s3 bucket.
+                        For the dump method: Amazon s3 bucket.
   -P PREFIX, --prefix PREFIX
-                        For grouped objects aka s3 folders, provide the prefix
-                        key
+                        For the dump method: For grouped objects aka s3 folders, provide the prefix key
+  -v VOLUME_ID [VOLUME_ID ...], --volume_id VOLUME_ID [VOLUME_ID ...]
+                        For the snapshot method: Provide the data and journal volume_id list to snapshot: If data and journal resides in a separate volumes, both volumes are required.
+  --no_journal          For the snapshot method: If pressent, the instance is either running without journaling or has the journal files on a separate volume, you must flush all writes to disk and lock the
+                        database to prevent writes during the backup process.
+  -r REGION, --region REGION
+                        Specify an alternate region to override the one defined in the .aws/credentials file
 ```
 
 route53-set-hostname.py
