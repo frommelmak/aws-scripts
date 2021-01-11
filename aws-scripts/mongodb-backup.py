@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import boto3
+import botocore
 import sys
 import argparse
 import subprocess
@@ -11,28 +12,48 @@ import distutils.spawn
 from pymongo import MongoClient
 from pymongo import errors
 
-def fsyncLock(action, host, username, password):
+def fsync(action, host, username, password):
     client = MongoClient(host)
     db = client['admin']
-
-    if username and password:
-        try:
-            db.authenticate(username, password)
-            print("[+] Database connected!")
+    
+    if action == 'lock':
+        # lock    
+        if username and password:
+            try:
+                db.authenticate(username, password)
+                print("[+] Database connected!")
+                try:
+                   lock = db.command("fsync", lock=True)["info"]
+                except Exception as e:
+                   raise e
+            except Exception as e:
+                print("[+] Database connection error!")
+                raise e
+        else:
             try:
                lock = db.command("fsync", lock=True)["info"]
-               print(lock)
             except Exception as e:
                raise e
-        except Exception as e:
-            print("[+] Database connection error!")
-            raise e
-    else:
-        try:
-           lock = db.command("fsync", lock=True)["info"]
-           print(lock)
-        except Exception as e:
-           raise e
+    elif action == 'unlock':
+        # unlock
+        if username and password:
+            try:
+                db.authenticate(username, password)
+                print("[+] Database connected!")
+                try:
+                   lock = db.command("fsyncUnlock")["info"]
+                except Exception as e:
+                   raise e
+            except Exception as e:
+                print("[+] Database connection error!")
+                raise e
+        else:
+            try:
+               lock = db.command("fsyncUnlock")["info"]
+            except Exception as e:
+               raise e
+    
+    return lock
 
 def create_snapshot(RegionName, volumes_dict):
 
@@ -57,10 +78,14 @@ def create_snapshot(RegionName, volumes_dict):
                                 + str(e)
     # print the snapshots which were created successfully
     if len(successful_snapshots) == 1:
-       print("Snapshots: %s, %s " % successful_snapshots['data'])
+       print("  Snapshots: %s " % successful_snapshots['data'])
+       snap_ids=[successful_snapshots['data']]
 
     if len(successful_snapshots) == 2:
-       print("Snapshots: %s, %s " % (successful_snapshots['data'],successful_snapshots['journal']))
+       print("  Snapshots: %s, %s " % (successful_snapshots['data'],successful_snapshots['journal']))
+       snap_ids=[successful_snapshots['data'], successful_snapshots['journal']]
+    
+    return snap_ids
 
 def dump(host, database, exclude_collection, username, password, out):
 
@@ -236,12 +261,26 @@ def main():
            print("  Volumes: %s, %s" % (arg.volume_id[0], arg.volume_id[1]))
 
        if fsyncLock == True:
-           fsyncLock("lock", arg.host, arg.user, arg.password)
-
+            try:
+                lockres = fsync("lock", arg.host, arg.user, arg.password)
+                print ("  Lock result: %s" % lockres)
+            except Exception as e:
+                print ("  An error ocurred: %s" % e)
        # Para cada volumen llamo a función de creación de snapshot
-       #create_snapshot(arg.region, volumes_dict)
-       # Buble para ver si ha terminado Si completed
+       snapshots = create_snapshot(arg.region, volumes_dict)
+       print ("  waiting for %s to complete" % snapshots)
+       try:
+           client = boto3.client('ec2', region_name=arg.region)
+           waiter = client.get_waiter('snapshot_completed')
+           waiter.wait(SnapshotIds=snapshots)
+       except botocore.exceptions.WaiterError as e:
+           print(e.message)
        # Llamo a funcion fsycLock(stop)
+       try:
+           lockres = fsync("unlock", arg.host, arg.user, arg.password)
+           print ("  Lock result: %s" % lockres)
+       except Exception as e:
+           print ("  An error ocurred: %s" % e)
 
 if __name__ == '__main__':
     sys.exit(main())
