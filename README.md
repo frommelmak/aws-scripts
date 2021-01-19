@@ -33,7 +33,7 @@ region=xx-xxxx-x
 ec2-instances.py
 ----------------
 
-Lists the EC2 instances including the Name Tag, IP, type, zone, vpc, ID and the status.
+Lists the EC2 instances including the Name Tag, IP, type, zone, vpc, subnet and the status.
 
 You can filter the result by name, type and/or status. Or you can provide a list of instance IDs instead.
 
