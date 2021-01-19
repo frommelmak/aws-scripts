@@ -9,8 +9,8 @@ import re
 def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
    ec2 = boto3.resource('ec2', region_name=RegionName)
    instances = ec2.instances.filter(Filters=Filter, InstanceIds=InstanceIds)
-   columns_format="%-3s %-26s %-15s %-15s %-20s %-10s %-11s %-12s %-16s"
-   print(columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "Zone","VPC", "Status"))
+   columns_format="%-3s %-26s %-15s %-15s %-20s %-10s %-11s %-12s %-24s %-16s"
+   print(columns_format % ("num", "Name", "Public IP", "Private IP", "ID", "Type", "Zone", "VPC", "Subnet", "Status"))
    num = 1
    hosts = [] 
    name = {}  
@@ -38,6 +38,7 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
                                    i.instance_type,
                                    i.placement['AvailabilityZone'],
                                    i.vpc_id,
+                                   i.subnet_id,
                                    i.state['Name']
                                  ))
           num = num + 1
