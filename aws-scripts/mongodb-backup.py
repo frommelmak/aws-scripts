@@ -57,14 +57,30 @@ def fsync(action, host, username, password):
 
 def create_snapshot(RegionName, volumes_dict):
 
+    dtime = datetime.now()
     client = boto3.client('ec2', region_name=RegionName)
     successful_snapshots = dict()
     # iterate through each item in volumes_dict and use key as description of snapshot
     for snapshot in volumes_dict:
         try:
             response = client.create_snapshot(
-                Description= "Crated by aws-scripts/mongodb_backup.py: ",
+                Description= "Crated by aws-scripts/mongodb_backup.py ",
                 VolumeId= volumes_dict[snapshot],
+                TagSpecifications=[
+                    {
+                        'ResourceType': 'snapshot',
+                        'Tags': [
+                            {
+                                'Key': 'aws-scripts:mongodb_backup.py:managed',
+                                'Value': 'true'
+                            },
+                            {
+                                'Key': 'Name',
+                                'Value': dtime
+                            },
+                        ]
+                    },
+                ],
                 DryRun= False
             )
             # response is a dictionary containing ResponseMetadata and SnapshotId
@@ -73,6 +89,8 @@ def create_snapshot(RegionName, volumes_dict):
             # check if status_code was 200 or not to ensure the snapshot was created successfully
             if status_code == 200:
                 successful_snapshots[snapshot] = snapshot_id
+            else:
+                print("status code: %s" % status_code)
         except Exception as e:
             exception_message = "There was error in creating snapshot " + snapshot + " with volume id "+volumes_dict[snapshot]+" and error is: \n"\
                                 + str(e)
