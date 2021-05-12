@@ -96,6 +96,28 @@ To use the Google calendar feature you just have to [enable the calendar API in 
 
 Then, whenever you buy new reservations on Amazon Web Services, you can add the new reservations in your calendar by just running the script.
 
+
+ec2-instance-state.py
+---------------------
+Set the desired state for an EC2 instance or a list of instances.
+
+The '-h' optipn shows you how to use the available options.
+
+```
+usage: ec2-instance-state.py [-h] [-s {stop,start,reboot,terminate}] -l ID_LIST [ID_LIST ...] [-r REGION]
+
+Set desired EC2 instance state
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s {stop,start,reboot,terminate}, --state {stop,start,reboot,terminate}
+                        Set the desired state for the instances provided
+  -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
+                        InstanceIds list
+  -r REGION, --region REGION
+                        Specify an alternate region to override the one defined in the .aws/credentials file
+```
+
 ec2-ebs.py
 ----------
 Lists the EC2 EBS volumes including the Name Tag, size, device, ID, attached instance ID, Attached instance Tag Name, type, IOPS, zone and status.
