@@ -101,10 +101,12 @@ ec2-instance-state.py
 ---------------------
 Set the desired state for an EC2 instance or a list of instances.
 
+You can use it form a cron task in order to manage the instance state of one or several instances. You can even use it witout provide user credential thanks to the assume role support.
+
 The '-h' optipn shows you how to use the available options.
 
 ```
-usage: ec2-instance-state.py [-h] [-s {stop,start,reboot,terminate}] -l ID_LIST [ID_LIST ...] [-r REGION]
+usage: ec2-instance-state.py [-h] [-s {stop,start,reboot,terminate}] -l ID_LIST [ID_LIST ...] [--role_arn ROLE_ARN] [-r REGION]
 
 Set desired EC2 instance state
 
@@ -114,6 +116,8 @@ optional arguments:
                         Set the desired state for the instances provided
   -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
                         InstanceIds list
+  --role_arn ROLE_ARN   If the script run on an EC2 instance with an IAM role attached, then the Security Token Service will provide a set of temporary credentials allowing the actions of the assumed role.
+                        With this method, no user credentials are required, just the Role ARN to be assumed.
   -r REGION, --region REGION
                         Specify an alternate region to override the one defined in the .aws/credentials file
 ```
