@@ -102,7 +102,7 @@ ec2-instance-state.py
 Set the desired state for an EC2 instance or a list of instances.
 
 You can use it form a cron task in order to manage the instance state of one or several instances.
-You can even use it witout provide IAM user credentials thanks to the assume role support.
+You can even use it without providing the IAM user credentials, thanks to the assume role support.
 
 The '-h' optipn shows you how to use the available options.
 
@@ -123,7 +123,7 @@ optional arguments:
                         Specify an alternate region to override the one defined in the .aws/credentials file
 ```
 
-This is an example of a the minimun permissions Policy you can attach to the your role in order to auto-stop an instance from a cron job.
+This is an example of the minimun permissions required in the Role Policy in order to auto-stop an instance from a cron job.
 
 ```
 {
