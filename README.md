@@ -101,7 +101,8 @@ ec2-instance-state.py
 ---------------------
 Set the desired state for an EC2 instance or a list of instances.
 
-You can use it form a cron task in order to manage the instance state of one or several instances. You can even use it witout provide user credential thanks to the assume role support.
+You can use it form a cron task in order to manage the instance state of one or several instances.
+You can even use it witout provide IAM user credentials thanks to the assume role support.
 
 The '-h' optipn shows you how to use the available options.
 
