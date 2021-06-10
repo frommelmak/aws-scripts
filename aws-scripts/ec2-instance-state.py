@@ -47,19 +47,12 @@ def main():
                               allowing the actions of the assumed role.\
                               With this method, no user credentials are \
                               required, just the Role ARN to be assumed." )
-    parser.add_argument('-r', '--region',
-                        help="Specify an alternate region to override \
-                              the one defined in the .aws/credentials file")
+    parser.add_argument('-r', '--region', required=True
+                        help="Specify the region. This flag is required")
 
     arg = parser.parse_args()
 
     instances=[]
-
-    if arg.region:
-       client = boto3.client('ec2', region_name=arg.region)
-       regions = [region['RegionName'] for region in client.describe_regions()['Regions']]
-       if arg.region not in regions:
-          sys.exit("ERROR: Please, choose a valid region.")
 
     if arg.id_list:
         instances=arg.id_list

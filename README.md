@@ -123,6 +123,28 @@ optional arguments:
                         Specify an alternate region to override the one defined in the .aws/credentials file
 ```
 
+This is an example of a the minimun permissions Policy you can attach to the your role in order to auto-stop an instance from a cron job.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "ec2:StopInstances",
+            "Resource": "arn:aws:ec2:eu-west-1:<ACCOUNT_ID>:instance/<INSTANCE_ID>"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/<AUTOSTOP_ROLE_NAME>"
+        }
+    ]
+}
+```
+
 ec2-ebs.py
 ----------
 Lists the EC2 EBS volumes including the Name Tag, size, device, ID, attached instance ID, Attached instance Tag Name, type, IOPS, zone and status.
