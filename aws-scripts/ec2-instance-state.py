@@ -47,7 +47,7 @@ def main():
                               allowing the actions of the assumed role.\
                               With this method, no user credentials are \
                               required, just the Role ARN to be assumed." )
-    parser.add_argument('-r', '--region', required=True
+    parser.add_argument('-r', '--region', required=True,
                         help="Specify the region. This flag is required")
 
     arg = parser.parse_args()
