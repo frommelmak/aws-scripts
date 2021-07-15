@@ -105,7 +105,7 @@ def create_snapshot(RegionName, volumes_dict):
     
     return snap_ids
 
-def dump(host, database, exclude_collection, username, password, out):
+def dump(host, database, collection, exclude_collection, username, password, out):
 
     if username and password:
         auth_str= "--username %s --password %s" % (username, password)
@@ -116,6 +116,8 @@ def dump(host, database, exclude_collection, username, password, out):
         db_str="--db %s" % (database)
         if exclude_collection:
             db_str="--db %s --excludeCollection %s" % (database, exclude_collection)
+        if collection:
+            db_str="--db %s --collection %s" % (database, collection)
     else:
         db_str=""
 
@@ -138,6 +140,8 @@ def main():
                         help="Mongodb host: <hostname>:<port>. By default: localhost:27017" )
     parser.add_argument('-d', '--database',
                         help="For the dump method: The database to backup (all if not provided)")
+    parser.add_argument('-c', '--collection',
+                        help="For the dump method: The collection to backup. Requires '-d' option")
     parser.add_argument('-e', '--exclude_collection',
                         help="For the dump method: The collection to exclude from backup. Requires '-d' option")
     parser.add_argument('-o', '--out', default='dump',
@@ -172,6 +176,9 @@ def main():
 
     if arg.exclude_collection and not arg.database:
        parser.error("--exclude_collection requires --database")
+    
+    if arg.collection and not arg.database:
+       parser.error("--collection requires --database")
 
     if arg.region:
        client = boto3.client('ec2')
@@ -188,7 +195,7 @@ def main():
             print("mongodump path: not found!")
             sys.exit(1)
         # mongodump
-        dump(arg.host, arg.database, arg.exclude_collection ,arg.user, arg.password, arg.out)
+        dump(arg.host, arg.database, arg.collection, arg.exclude_collection ,arg.user, arg.password, arg.out)
 
         # List and get the number of files in the bucket
         s3 = boto3.resource('s3')
