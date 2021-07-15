@@ -222,8 +222,8 @@ Two methods are supported: dump and snapshot.
 For the dump method, you can specify the number of copies to retain in the bucket or in the EC2 snapshot area. The oldest ones will be automatically removed.
 
 ```
-usage: mongodb-backup.py [-h] [-m {dump,snapshot}] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE] [-e EXCLUDE_COLLECTION] [-o OUT] [-n NUMBER] [-b BUCKET] [-P PREFIX] [-v VOLUME_ID [VOLUME_ID ...]]
-                         [--no_journal] [-r REGION]
+usage: mongodb-backup.py [-h] [-m {dump,snapshot}] [-u USER] [-p PASSWORD] [-H HOST] [-d DATABASE] [-c COLLECTION] [-e EXCLUDE_COLLECTION] [-o OUT] [-n NUMBER] [-b BUCKET] [-P PREFIX]
+                         [-v VOLUME_ID [VOLUME_ID ...]] [--no_journal] [-r REGION]
 
 A tool to make mongodb backups on Amazon
 
@@ -237,6 +237,8 @@ optional arguments:
   -H HOST, --host HOST  Mongodb host: <hostname>:<port>. By default: localhost:27017
   -d DATABASE, --database DATABASE
                         For the dump method: The database to backup (all if not provided)
+  -c COLLECTION, --collection COLLECTION
+                        For the dump method: The collection to backup. Requires '-d' option
   -e EXCLUDE_COLLECTION, --exclude_collection EXCLUDE_COLLECTION
                         For the dump method: The collection to exclude from backup. Requires '-d' option
   -o OUT, --out OUT     For the dump method: The output directory for dumped files
@@ -252,6 +254,7 @@ optional arguments:
                         database to prevent writes during the backup process.
   -r REGION, --region REGION
                         Specify an alternate region to override the one defined in the .aws/credentials file
+
 ```
 
 route53-set-hostname.py
