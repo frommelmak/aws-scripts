@@ -208,7 +208,7 @@ def main():
         print("Filelist on the S3 bucket:")
         filedict={}
         for object in objects:
-            if object.key.startswith(arg.prefix + '/' + arg.database):
+            if object.key.startswith(arg.prefix + '/dump-' + arg.database):
               print((object.key))
               filedict.update({object.key: object.last_modified})
 
