@@ -18,6 +18,12 @@ pip install aws-scripts
 
 If dependencies are already satisfied, nothing will be installed.
 
+If you already have aws-scripts installed in your computer you can update to the latest version as follows:
+
+```
+pip install --upgrade aws-scripts
+```
+
 To provide your AWS credentials use the boto/boto3 config file `~/.aws/credentials`:
 
 ``` ini
