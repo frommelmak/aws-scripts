@@ -39,14 +39,18 @@ You can filter the result by name, type and/or status. Or you can provide a list
 
 Finally you can execute remote commands on all the instances returned by the filter or the list.
 
+The execution method support both: direct connections against the public instance IP or using a bastion host.
+
+When this method is used, the .ssh/config file is used to establish the connection.
+
 The '-h' option shows you how to use the available options.
 
 ```
-usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS]
-                        [-l ID_LIST [ID_LIST ...]] [-e EXECUTE] [-r REGION]
-                        [-u USER]
+usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-l ID_LIST [ID_LIST ...]] [-i IGNORE] [-e EXECUTE] [-r REGION] [-u USER] [-c {direct,bastion-host}]
 
-optional arguments:
+Shows a list with your EC2 instances, then you can execute remote commands on those instances.
+
+options:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Filter result by name.
   -t TYPE, --type TYPE  Filer result by type.
@@ -55,15 +59,17 @@ optional arguments:
   -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
                         Do not filter the result. Provide a InstanceIds list instead.
   -i IGNORE, --ignore IGNORE
-                        Do not show hosts lines containing the "IGNORE"
-                        pattern in the tag Name
+                        Do not show hosts lines containing the "IGNORE" pattern in the tag Name
   -e EXECUTE, --execute EXECUTE
                         Execute a command on instances
   -r REGION, --region REGION
-                        Specify an alternate region to override the one
-                        defined in the .aws/credentials file
-  -u USER, --user USER  User to run commands if -e option is used. Ubuntu user
-                        is used by default
+                        Specify an alternate region to override the one defined in the .aws/credentials file
+  -u USER, --user USER  User to run commands (if -e option is used). Ubuntu user is used by default
+  -c {direct,bastion-host}, --connection_method {direct,bastion-host}
+                        The Method to connect to the instance (if -e option is used).
+                        If the instance exposes the SSH port on a public IP, use direct. Otherwhise choose bastion-host.
+                        This method look for the hostname and username inside the .ssh/config file to reach the target instance.
+
 ```
 
 ec2-reserved.py

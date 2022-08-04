@@ -2,7 +2,7 @@
 import boto3
 import sys
 import argparse
-import paramiko
+from fabric import Connection
 import re
 
 
@@ -42,22 +42,19 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
                                    i.state['Name']
                                  ))
           num = num + 1
-          item={'id': i.id, 'ip': i.public_ip_address, 'hostname': name['Value'], 'status': i.state['Name'],}
+          item={'id': i.id, 'public_ip': i.public_ip_address, 'private_ip': i.private_ip_address, 'hostname': name['Value'], 'status': i.state['Name'],}
           hosts.append(item)
    return hosts
 
-def execute_cmd(host,user,cmd):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    try:
-       ssh.connect(host, username=user)
-       stdin, stdout, stderr = ssh.exec_command(cmd)
-       stdout=stdout.read()
-       stderr=stderr.read()
-       ssh.close()
-       return stdout,stderr
-    except paramiko.AuthenticationException as e:
-       return "Authentication Error trying to connect into the host %s with the user %s. Plese review your keys" % (host, user), e 
+def execute_cmd(host,user,cmd,connection_method):
+    if connection_method == 'bastion-host':
+       # The connection user is readed from ./ssh/config file
+       result = Connection(host=host).run(cmd, hide=True)
+       return result
+    if connection_method == 'direct':
+        # The connection user is passed as an argument and defaults to ubuntu
+       result = Connection(host=host, user=user).run(cmd, hide=True)
+       return result
 
 def main():
     parser = argparse.ArgumentParser(description='Shows a list with your EC2 instances, then you can execute remote commands on those instances.')
@@ -78,8 +75,15 @@ def main():
                         help="Specify an alternate region to override \
                               the one defined in the .aws/credentials file")
     parser.add_argument('-u', '--user', default="ubuntu",
-                        help="User to run commands if -e option is used.\
+                        help="User to run commands (if -e option is used).\
                               Ubuntu user is used by default")
+    parser.add_argument('-c', '--connection_method',
+                        help="The Method to connect to the instance (if -e option is used). \
+                              If the instance exposes the SSH port on a public IP, use direct. \
+                              Otherwhise choose bastion-host. This method look for the hostname and username \
+                              inside the .ssh/config file to reach the target instance.",
+                        choices=['direct', 'bastion-host'],
+                        default="direct")
 
     arg = parser.parse_args()
 
@@ -113,6 +117,10 @@ def main():
     names = ""
 
     if arg.execute:
+       if arg.connection_method == 'direct':
+          target='public_ip'
+       if arg.connection_method == 'bastion-host':
+          target='hostname'
        for item in hosts:
           names = names + " " + item["hostname"] + "(" + item["id"] + ")"
        print("\nCommand to execute: %s" % arg.execute)
@@ -120,10 +128,11 @@ def main():
        print("Hosts list: %s\n" % names) 
        for item in hosts:
           if item["status"] == 'running':
+             if item["public_ip"] is None and arg.connection_method == 'direct':
+                print("::: %s (%s) is not reachable using direct method. Use the bastion-host instead  (command execution skiped)" % (item["hostname"], item["id"]))
+                continue
              print("::: %s (%s)" % (item["hostname"], item["id"]))
-             stdout,stderr = execute_cmd(item["ip"], arg.user, arg.execute)
-             print(stdout.decode()) 
-             print(stderr.decode())
+             print(execute_cmd(item[target], arg.user, arg.execute, arg.connection_method))
           else:
              print("::: %s (%s) is not running (command execution skiped)" % (item["hostname"], item["id"]))
 
