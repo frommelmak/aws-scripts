@@ -49,7 +49,7 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
 def execute_cmd(host,user,cmd,connection_method):
     if connection_method == 'bastion-host':
        # The connection user is readed from ./ssh/config file
-       result = Connection(host=host).run(cmd, hide=True)
+       result = Connection(host=host, user=user).run(cmd, hide=True)
        return result
     if connection_method == 'direct':
         # The connection user is passed as an argument and defaults to ubuntu
@@ -74,9 +74,9 @@ def main():
     parser.add_argument('-r', '--region',
                         help="Specify an alternate region to override \
                               the one defined in the .aws/credentials file")
-    parser.add_argument('-u', '--user', default="ubuntu",
+    parser.add_argument('-u', '--user', required=True,
                         help="User to run commands (if -e option is used).\
-                              Ubuntu user is used by default")
+                              A user is always required, even if you have one defined in .ssh/config file")
     parser.add_argument('-c', '--connection_method',
                         help="The Method to connect to the instance (if -e option is used). \
                               If the instance exposes the SSH port on a public IP, use direct. \
