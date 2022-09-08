@@ -74,7 +74,7 @@ def main():
     parser.add_argument('-r', '--region',
                         help="Specify an alternate region to override \
                               the one defined in the .aws/credentials file")
-    parser.add_argument('-u', '--user', required=True,
+    parser.add_argument('-u', '--user',
                         help="User to run commands (if -e option is used).\
                               A user is always required, even if you have one defined in .ssh/config file")
     parser.add_argument('-c', '--connection_method',
@@ -91,6 +91,9 @@ def main():
     filter=[]
     InstanceIds=[]
     IgnorePattern=""
+    
+    if arg.execute and (arg.user is None):
+       parser.error("--execute requires --user.")
     
     if arg.name:
         filter.append({'Name': 'tag-value', 'Values': ["*" + arg.name + "*"]})
