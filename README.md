@@ -70,7 +70,7 @@ options:
                         Execute a command on instances
   -r REGION, --region REGION
                         Specify an alternate region to override the one defined in the .aws/credentials file
-  -u USER, --user USER  User to run commands (if -e option is used). Ubuntu user is used by default
+  -u USER, --user USER  User to run commands (if -e option is used). A user is always required, even if you have one defined in .ssh/config file 
   -c {direct,bastion-host}, --connection_method {direct,bastion-host}
                         The Method to connect to the instance (if -e option is used).
                         If the instance exposes the SSH port on a public IP, use direct. Otherwhise choose bastion-host.
