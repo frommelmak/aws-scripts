@@ -49,11 +49,11 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
 def execute_cmd(host,user,cmd,connection_method):
     if connection_method == 'bastion-host':
        # The connection user is readed from ./ssh/config file
-       result = Connection(host=host, user=user).run(cmd, hide=True)
+       result = Connection(host=host, user=user).run(cmd, hide=True, warn=True)
        return result
     if connection_method == 'direct':
         # The connection user is passed as an argument and defaults to ubuntu
-       result = Connection(host=host, user=user).run(cmd, hide=True)
+       result = Connection(host=host, user=user).run(cmd, hide=True, warn=True)
        return result
 
 def main():
