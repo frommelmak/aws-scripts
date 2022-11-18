@@ -55,7 +55,7 @@ def list_security_group(Filter, RegionName):
         sgs = ec2.describe_security_group_rules(Filters=Filter)
 
         in_table = Table(title="Inbound Rules for "+Filter[0].get('Values')[0]+" Security Group")
-        in_table.add_column("num", justify="right", style="cyan", no_wrap=True)
+        in_table.add_column("num", justify="right", style="cyan")
         in_table.add_column("SG Rule ID", style="green")
         in_table.add_column("IP Version", style="green")
         in_table.add_column("Protocol", justify="right", style="green")
@@ -64,7 +64,7 @@ def list_security_group(Filter, RegionName):
         in_table.add_column("Description", style="green")
         
         out_table = Table(title="Outbound Rules for "+Filter[0].get('Values')[0]+" Security Group")
-        out_table.add_column("num", justify="right", style="cyan", no_wrap=True)
+        out_table.add_column("num", justify="right", style="cyan")
         out_table.add_column("SG Rule ID", style="green")
         out_table.add_column("IP Version", style="green")
         out_table.add_column("Protocol", justify="right", style="green")
