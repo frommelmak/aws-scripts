@@ -3,14 +3,22 @@
 import boto3
 import argparse
 import sys
-
 from botocore.exceptions import ClientError
+from rich.console import Console
+from rich.table import Table
 
 def list_security_groups(Filter, GroupIds, RegionName):
     
     ec2 = boto3.client('ec2', region_name=RegionName)
-    columns_format="%-3s %-21s %-26s %-62s %-15s %-15s %-60s"
-    print(columns_format % ("num", "SG ID", "SG Name", "Description", "Inbound Rules", "Outbound Rules", "VPC"))
+    table = Table()
+    table.add_column("num", justify="right", style="cyan", no_wrap=True)
+    table.add_column("SG ID", style="magenta")
+    table.add_column("SG Name", style="green")
+    table.add_column("Description", style="green")
+    table.add_column("Inbound Rules", justify="right", style="green")
+    table.add_column("Outbound Rules", justify="right", style="green")
+    table.add_column("VPC", justify="right", style="green")
+
     num = 1
 
     try:
@@ -21,25 +29,87 @@ def list_security_groups(Filter, GroupIds, RegionName):
                 SGName = sgs.get('SecurityGroups')[g].get('GroupName')[ 0 : 23 ]+'...'
             else:
                 SGName = sgs.get('SecurityGroups')[g].get('GroupName')
-                
-            if len(sgs.get('SecurityGroups')[g].get('Description')) > 59:
-                SGDescription = sgs.get('SecurityGroups')[g].get('Description')[ 0 : 59 ]+'...'
-            else:
-                SGDescription = sgs.get('SecurityGroups')[g].get('Description')
-
-            print(columns_format % (
-                                    num,
-                                    sgs.get('SecurityGroups')[g].get('GroupId'),
-                                    SGName,
-                                    SGDescription,
-                                    len(sgs.get('SecurityGroups')[g].get('IpPermissions')),
-                                    len(sgs.get('SecurityGroups')[g].get('IpPermissionsEgress')),
-                                    sgs.get('SecurityGroups')[g].get('VpcId')
-                                   )) 
+            
+            table.add_row(
+                str(num),
+                str(sgs.get('SecurityGroups')[g].get('GroupId')),
+                SGName,
+                sgs.get('SecurityGroups')[g].get('Description'),
+                str(len(sgs.get('SecurityGroups')[g].get('IpPermissions'))),
+                str(len(sgs.get('SecurityGroups')[g].get('IpPermissionsEgress'))),
+                sgs.get('SecurityGroups')[g].get('VpcId')                  
+            )    
 
             num = num + 1
+        console = Console()
+        console.print(table)
     except ClientError as e:
         print(e)
+
+def list_security_group(GroupId, RegionName):
+    
+    ec2 = boto3.client('ec2', region_name=RegionName)
+    num = 1
+
+    try:
+        sgs = ec2.describe_security_groups(GroupIds=GroupId)
+        print (sgs.get('SecurityGroups')[0].get('IpPermissions')[1])
+        table = Table(title="Inbound Rules for "+sgs.get('SecurityGroups')[0].get('GroupName')+" Security Group")
+        table.add_column("num", justify="right", style="cyan", no_wrap=True)
+        table.add_column("Name", style="magenta")
+        table.add_column("SG Rule ID", style="green")
+        table.add_column("IP Version", style="green")
+        table.add_column("Type", justify="right", style="green")
+        table.add_column("Protocol", justify="right", style="green")
+        table.add_column("Port Range", justify="right", style="green")
+        table.add_column("Source", justify="right", style="green")
+        table.add_column("Descriptionx", style="green")
+        for n in range(len(sgs.get('SecurityGroups')[0].get('IpPermissions'))):
+            for ipv4 in range(len(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('IpRanges'))):
+                table.add_row(
+                    str(num),
+                    "name",
+                    "rule id",
+                    "IPv4",
+                    "type",
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('IpProtocol'),
+                    str(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('FromPort'))+"-"+str(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('ToPort')),
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('IpRanges')[ipv4].get('CidrIp'),
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('IpRanges')[ipv4].get('Description')                  
+                )
+                num = num + 1
+            for ipv6 in range(len(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('Ipv6Ranges'))):
+                table.add_row(
+                    str(num),
+                    "name",
+                    "rule id",
+                    "IPv6",
+                    "type",
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('IpProtocol'),
+                    str(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('FromPort')),
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('Ipv6Ranges')[ipv6].get('CidrIp'),
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('Ipv6Ranges')[ipv6].get('Description')                  
+                )
+                num = num + 1
+            for uids in range(len(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('UserIdGroupPairs'))):
+                table.add_row(
+                    str(num),
+                    "name",
+                    "rule id",
+                    "-",
+                    "type",
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('IpProtocol'),
+                    str(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('FromPort')),
+                    str(sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('UserIdGroupPairs')[uids].get('GroupId')),
+                    sgs.get('SecurityGroups')[0].get('IpPermissions')[n].get('UserIdGroupPairs')[uids].get('Description')                  
+                )
+                num = num + 1
+
+        console = Console()
+        console.print(table)
+    except ClientError as e:
+        print(e)
+
 
 def main():
     parser = argparse.ArgumentParser(description='Security Groups Management')
@@ -47,16 +117,17 @@ def main():
                         help="Filter result by group name.")
     parser.add_argument('-l', '--gid_list',
                         nargs='+', type=str,
-                        help="Do not filter the result. Provide a InstanceIds list instead." )
+                        help="Do not filter the result. Provide a GroupIds list instead." )
     parser.add_argument('-r', '--region',
                         help="Specify an alternate region to override \
                               the one defined in the .aws/credentials file")
-    parser.add_argument('--show-rules',
-                        help="Show inbound and outbound rules for every result")
+    parser.add_argument('--show',
+                        help="Show inbound and outbound rules for the provided SG ID")
 
     arg = parser.parse_args()
     
     filter=[]
+    GroupIds=[]
 
     if arg.name:
         filter.append({'Name': 'group-name', 'Values': ["*" + arg.name + "*"]})
@@ -70,7 +141,10 @@ def main():
        if arg.region not in regions:
           sys.exit("ERROR: Please, choose a valid region.")
 
-    list_security_groups(filter, GroupIds, arg.region)
+    if not arg.show:
+        list_security_groups(filter, GroupIds, arg.region)
+    else:
+        list_security_group([arg.show], arg.region)
 
 if __name__ == '__main__':
     sys.exit(main())
