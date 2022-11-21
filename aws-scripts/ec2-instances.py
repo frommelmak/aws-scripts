@@ -10,20 +10,24 @@ from rich.table import Table
 def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
    ec2 = boto3.resource('ec2', region_name=RegionName)
    instances = ec2.instances.filter(Filters=Filter, InstanceIds=InstanceIds)
-   table = Table()
-   table.add_column("num", justify="right", no_wrap=True)
-   table.add_column("Name", style="green")
-   table.add_column("Public IP", style="red")
-   table.add_column("Private IP", style="red")
-   table.add_column("ID", justify="right", style="cyan")
-   table.add_column("Type", justify="right", style="green")
-   table.add_column("Zone", justify="right", style="green")
-   table.add_column("VPC", style="cyan")
-   table.add_column("Subnet", style="cyan")
-   table.add_column("Status")
    num = 1
    hosts = [] 
    name = {}  
+   for i in instances:
+       num = num + 1
+   if num > 1:
+       table = Table()
+       table.add_column("num", justify="right", no_wrap=True)
+       table.add_column("Name", style="green")
+       table.add_column("Public IP", style="red")
+       table.add_column("Private IP", style="red")
+       table.add_column("ID", justify="right", style="cyan")
+       table.add_column("Type", justify="right", style="green")
+       table.add_column("Zone", justify="right", style="green")
+       table.add_column("VPC", style="cyan")
+       table.add_column("Subnet", style="cyan")
+       table.add_column("Status")
+   num =1
    for i in instances:
       try:
          if i.tags is not None:
@@ -68,8 +72,9 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
           num = num + 1
           item={'id': i.id, 'public_ip': i.public_ip_address, 'private_ip': i.private_ip_address, 'hostname': name['Value'], 'status': i.state['Name'],}
           hosts.append(item)
-   console = Console()
-   console.print(table)
+   if num > 1:
+       console = Console()
+       console.print(table)
    return hosts
 
 def execute_cmd(host,user,cmd,connection_method):
