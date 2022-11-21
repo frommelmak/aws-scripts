@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws-scripts",
-    version = "0.1.0",
+    version = "0.1.1",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
@@ -38,6 +38,7 @@ setup(
                'aws-scripts/route53-del-hostname.py',
                'aws-scripts/s3-download-file.py',
                'aws-scripts/lifecycle-hook-worker.py',
+               'aws-scripts/ec2-sg.py'
               ],
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
