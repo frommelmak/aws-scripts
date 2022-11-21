@@ -11,12 +11,12 @@ def list_security_groups(Filter, GroupIds, RegionName):
     
     ec2 = boto3.client('ec2', region_name=RegionName)
     table = Table()
-    table.add_column("num", justify="right", style="cyan", no_wrap=True)
-    table.add_column("SG ID", style="magenta")
+    table.add_column("num", justify="right", no_wrap=True)
+    table.add_column("SG ID", style="cyan")
     table.add_column("SG Name", style="green")
-    table.add_column("Description", style="green")
-    table.add_column("Inbound Rules", justify="right", style="green")
-    table.add_column("Outbound Rules", justify="right", style="green")
+    table.add_column("Description")
+    table.add_column("Inbound Rules", justify="right", style="red")
+    table.add_column("Outbound Rules", justify="right", style="red")
     table.add_column("VPC", justify="right", style="green")
 
     num = 1
