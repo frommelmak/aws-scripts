@@ -157,6 +157,27 @@ This is an example of the minimun permissions required in the Role Policy in ord
 }
 ```
 
+ec2-sg.py
+---------
+
+Lists the EC2 Security Groups within an AWS region. The result can be filtered by name.
+You can also show the Inbound and Outbound rules of the chosen security group.
+
+```
+usage: ec2-sg.py [-h] [-n NAME] [-l GID_LIST [GID_LIST ...]] [-r REGION] [-s SHOW]
+
+Security Groups Management
+
+options:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Filter result by group name.
+  -l GID_LIST [GID_LIST ...], --gid_list GID_LIST [GID_LIST ...]
+                        Do not filter the result. Provide a GroupIds list instead.
+  -r REGION, --region REGION
+                        Specify an alternate region to override the one defined in the .aws/credentials file
+  -s SHOW, --show SHOW  Show inbound and outbound rules for the provided SG ID
+```
+
 ec2-ebs.py
 ----------
 Lists the EC2 EBS volumes including the Name Tag, size, device, ID, attached instance ID, Attached instance Tag Name, type, IOPS, zone and status.
