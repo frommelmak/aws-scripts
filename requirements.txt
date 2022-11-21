@@ -30,3 +30,6 @@ ast
 
 #s3-download-file.py
 botocore
+
+#ec2-sg.py
+rich

@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws-scripts",
-    version = "0.0.32",
+    version = "0.1.0",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
@@ -22,6 +22,7 @@ setup(
                       'sshutil>=0.9.7',
                       'botocore>=1.9.3',
                       'pymongo>=2.9,< 3.0',
+                      'rich>=12.5.1',
                       ],
     python_requires='>=2.7',
     packages=find_packages(exclude=['docs', 'tests*']),

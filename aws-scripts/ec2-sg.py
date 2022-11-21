@@ -138,7 +138,7 @@ def main():
     parser.add_argument('-r', '--region',
                         help="Specify an alternate region to override \
                               the one defined in the .aws/credentials file")
-    parser.add_argument('--show',
+    parser.add_argument('-s','--show',
                         help="Show inbound and outbound rules for the provided SG ID")
 
     arg = parser.parse_args()
