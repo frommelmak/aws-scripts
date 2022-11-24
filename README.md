@@ -208,12 +208,14 @@ ec2-elb.py
 Lists all your Elastic Load Balancers and his related instances.
 
 ```
-usage: ec2-elb.py [-h]
+usage: ec2-elb.py [-h] [-t {classic,current,all}]
 
 For every Elastic Load Balancer list the attached instances
 
-optional arguments:
-  -h, --help  show this help message and exit
+options:
+  -h, --help            show this help message and exit
+  -t {classic,current,all}, --type {classic,current,all}
+                        It shows the current generation of ELBs (Application, Network and/or Gateway) and/or the previous one (Classic).
 ```
 
 ec2-snap-mgmt.py
