@@ -5,6 +5,7 @@ import sys
 import argparse
 from rich.tree import Tree
 from rich import print
+from rich.progress import track
 
 def get_name_tag(ec2, id):
    instance = ec2.Instance(id)
@@ -18,11 +19,12 @@ def list_elb(ec2, region):
     client = boto3.client('elb')
     response = client.describe_load_balancers()
     tree = Tree("[bold white]Classic Elastic Load Balancers in the "+region+" AWS region")
-    for elb in range(len(response.get('LoadBalancerDescriptions'))):
+    for elb in track(range(len(response.get('LoadBalancerDescriptions'))), description="Procesing..."):
       load_balancer_name = response.get('LoadBalancerDescriptions')[elb].get('LoadBalancerName')
       instance_state = client.describe_instance_health(LoadBalancerName=load_balancer_name)
       elb_tree = tree.add(":file_folder: [bold white]"+load_balancer_name)
       for instance in range(len(response.get('LoadBalancerDescriptions')[elb].get('Instances'))):
+         track(range(20), description="Processing...")
          instance_id = instance_state.get('InstanceStates')[instance].get('InstanceId')
          if instance_state.get('InstanceStates')[instance].get('State') == 'OutOfService':
              branch = elb_tree.add("[cyan]"+instance_id+" [white]("+get_name_tag(ec2, instance_id)+")"+" Status: [red]"+instance_state.get('InstanceStates')[instance].get('State'))
@@ -34,7 +36,7 @@ def list_elbv2(ec2, region):
     client = boto3.client('elbv2')
     response = client.describe_load_balancers()
     tree = Tree("[bold white]Current Generation of Elastic Load Balancers in %s AWS region" % region)
-    for elb in range(len(response.get('LoadBalancers'))):
+    for elb in track(range(len(response.get('LoadBalancers'))), description="Procesing..."):
       load_balancer_name = response.get('LoadBalancers')[elb].get('LoadBalancerName')
       load_balancer_arn = response.get('LoadBalancers')[elb].get('LoadBalancerArn')
       load_balancer_type = response.get('LoadBalancers')[elb].get('Type')
