@@ -29,14 +29,25 @@ def list_security_groups(Filter, GroupIds, RegionName):
                 SGName = sgs.get('SecurityGroups')[g].get('GroupName')[ 0 : 23 ]+'...'
             else:
                 SGName = sgs.get('SecurityGroups')[g].get('GroupName')
-            
+            for r in range(len(sgs.get('SecurityGroups')[g].get('IpPermissions'))):
+                ip_ranges = sgs.get('SecurityGroups')[g].get('IpPermissions')[r].get('IpRanges')
+                ipv6_ranges = sgs.get('SecurityGroups')[g].get('IpPermissions')[r].get('Ipv6Ranges')
+                prefix_list_ids = sgs.get('SecurityGroups')[g].get('IpPermissions')[r].get('PrefixListIds')
+                user_id_group_pairs = sgs.get('SecurityGroups')[g].get('IpPermissions')[r].get('UserIdGroupPairs')
+            inbound_rules_count = len(ip_ranges) + len(ipv6_ranges) + len (prefix_list_ids) + len(user_id_group_pairs)
+            for r in range(len(sgs.get('SecurityGroups')[g].get('IpPermissionsEgress'))):
+                ip_ranges = sgs.get('SecurityGroups')[g].get('IpPermissionsEgress')[r].get('IpRanges')
+                ipv6_ranges = sgs.get('SecurityGroups')[g].get('IpPermissionsEgress')[r].get('Ipv6Ranges')
+                prefix_list_ids = sgs.get('SecurityGroups')[g].get('IpPermissionsEgress')[r].get('PrefixListIds')
+                user_id_group_pairs = sgs.get('SecurityGroups')[g].get('IpPermissionsEgress')[r].get('UserIdGroupPairs')
+            outbound_rules_count = len(ip_ranges) + len(ipv6_ranges) + len (prefix_list_ids) + len(user_id_group_pairs)
             table.add_row(
                 str(num),
                 str(sgs.get('SecurityGroups')[g].get('GroupId')),
                 SGName,
                 sgs.get('SecurityGroups')[g].get('Description'),
-                str(len(sgs.get('SecurityGroups')[g].get('IpPermissions'))),
-                str(len(sgs.get('SecurityGroups')[g].get('IpPermissionsEgress'))),
+                str(inbound_rules_count),
+                str(outbound_rules_count),
                 sgs.get('SecurityGroups')[g].get('VpcId')                  
             )    
 
