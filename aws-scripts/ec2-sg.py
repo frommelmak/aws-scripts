@@ -6,6 +6,8 @@ import sys
 from botocore.exceptions import ClientError
 from rich.console import Console
 from rich.table import Table
+from requests import get
+import random
 
 def list_security_groups(Filter, GroupIds, RegionName):
     
@@ -29,6 +31,10 @@ def list_security_groups(Filter, GroupIds, RegionName):
                 SGName = sgs.get('SecurityGroups')[g].get('GroupName')[ 0 : 23 ]+'...'
             else:
                 SGName = sgs.get('SecurityGroups')[g].get('GroupName')
+            ip_ranges =[] 
+            ipv6_ranges = []
+            prefix_list_ids = []
+            user_id_group_pairs = []
             for r in range(len(sgs.get('SecurityGroups')[g].get('IpPermissions'))):
                 ip_ranges = sgs.get('SecurityGroups')[g].get('IpPermissions')[r].get('IpRanges')
                 ipv6_ranges = sgs.get('SecurityGroups')[g].get('IpPermissions')[r].get('Ipv6Ranges')
@@ -151,12 +157,88 @@ def main():
                               the one defined in the .aws/credentials file")
     parser.add_argument('-s','--show',
                         help="Show inbound and outbound rules for the provided SG ID")
+    parser.add_argument('--allow_my_public_ip',
+                        help="Modify the SSH inbound rule with your current public IP \
+                              address inside the provided Security Group ID.")
+    parser.add_argument('--security_group_rule_id',
+                        help="Modify the SSH inbound rule with your current public IP \
+                             address inside the provided Security Group Rule ID")
+    parser.add_argument('--sg_id',
+                        help="Allows you to provide the Security Group Rule.\
+                              Required when --delete_rule argument is used")
 
     arg = parser.parse_args()
     
     filter=[]
     GroupIds=[]
 
+    if arg.allow_my_public_ip and not arg.security_group_rule_id:
+        print("The argument allow_my_public_ip requires the argument security_group_rule_id.")
+        sys.exit(1)
+
+    if arg.allow_my_public_ip:
+        ec2 = boto3.client('ec2')
+        ip=None
+        ip_services=[
+                     "https://api.ipify.org",
+                     "https://ifconfig.me",
+                     "https://api.my-ip.io/ip",
+                     "http://myexternalip.com/raw",
+                     "http://ipwho.is/&fields=ip&output=csv"
+                     ]
+        random.shuffle(ip_services)
+        for url in ip_services:
+            try:
+                ip = get(url).content.decode('utf8')
+                break
+            except:
+                print("%s fail. Trying next..." % url)
+        if ip is None:
+            print("Public IP address not found using any services")
+            sys.exit(1)
+        else:
+            try:
+                data = ec2.modify_security_group_rules(
+                GroupId=arg.allow_my_public_ip,
+                SecurityGroupRules=[
+                        {
+                            'SecurityGroupRuleId': arg.security_group_rule_id,
+                            'SecurityGroupRule': {
+                                'IpProtocol': 'tcp',
+                                'FromPort': 22,
+                                'ToPort': 22,
+                                'CidrIpv4': ip+'/32',
+                                'Description': 'Modified on 28 Nov 2022 at 11:51 by ec2-sg.py from aws-scripts'
+                            }
+                        },
+                ])
+                if data:
+                    rule_table = Table(title="A new Inbound Rule added on the "+arg.allow_my_public_ip+" Security Group")
+                    rule_table.add_column("SG Rule ID", style="cyan")
+                    rule_table.add_column("IP Version", style="green")
+                    rule_table.add_column("Type", style="green")
+                    rule_table.add_column("Protocol", justify="right", style="green")
+                    rule_table.add_column("Port Range", justify="right", style="green")
+                    rule_table.add_column("Source", justify="right", style="green")
+                    rule_table.add_column("Description", justify="right", style="green")
+                    rule_table.add_row(
+                        arg.security_group_rule_id,
+                        "IPv4",
+                        "SSH",
+                        "TCP",
+                        "[red]22",
+                        "[red]"+ip+"/32",
+                        "[white]Modified on 28 Nov 2022 at 11:51 by ec2-sg.py from aws-scripts"
+                    )
+                    console = Console()
+                    console.print(rule_table)
+                    sys.exit(0)
+                else:
+                    print("an error occurred!")
+            except ClientError as e:
+                print(e)
+                sys.exit(0)
+        
     if arg.name:
         filter.append({'Name': 'group-name', 'Values': ["*" + arg.name + "*"]})
 
