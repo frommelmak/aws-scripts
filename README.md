@@ -167,7 +167,7 @@ You can also show the Inbound and Outbound rules of the chosen security group.
 
 As a sysadmin and/or developer, you or your team mates, will probably find yourself updating your public IP address frequently in order to gain SSH access to your EC2 instances.
 
-This command help you to do so. Just use the argument '--allow_my_public_ip' providing the Security Group ID and the Security Group Rule ID you want to update. The command will find out your public IP and will update the rule allowing you the SSH access.
+This command help you to do so. Just use the argument `--allow_my_public_ip` providing the Security Group ID and the Security Group Rule ID you want to update. The command will find out your public IP and will update the rule allowing you the SSH access.
 
 ```
 ec2-sg.py -h
