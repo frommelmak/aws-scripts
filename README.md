@@ -165,8 +165,13 @@ ec2-sg.py
 Lists the EC2 Security Groups within an AWS region. The result can be filtered by name.
 You can also show the Inbound and Outbound rules of the chosen security group.
 
+As a sysadmin and/or developer, you or your team mates, will probably find yourself updating your public IP address frequently in order to gain SSH access to your EC2 instances.
+
+This command help you to do so. Just use the argument '--allow_my_public_ip' providing the Security Group ID and the Security Group Rule ID you want to update. The command will find out your public IP and will update the rule allowing you the SSH access.
+
 ```
-usage: ec2-sg.py [-h] [-n NAME] [-l GID_LIST [GID_LIST ...]] [-r REGION] [-s SHOW]
+ec2-sg.py -h
+usage: ec2-sg.py [-h] [-n NAME] [-l GID_LIST [GID_LIST ...]] [-r REGION] [-s SHOW] [--allow_my_public_ip ALLOW_MY_PUBLIC_IP] [--security_group_rule_id SECURITY_GROUP_RULE_ID] [--sg_id SG_ID]
 
 Security Groups Management
 
@@ -178,6 +183,11 @@ options:
   -r REGION, --region REGION
                         Specify an alternate region to override the one defined in the .aws/credentials file
   -s SHOW, --show SHOW  Show inbound and outbound rules for the provided SG ID
+  --allow_my_public_ip ALLOW_MY_PUBLIC_IP
+                        Modify the SSH inbound rule with your current public IP address inside the provided Security Group ID.
+  --security_group_rule_id SECURITY_GROUP_RULE_ID
+                        Modify the SSH inbound rule with your current public IP address inside the provided Security Group Rule ID
+  --sg_id SG_ID         Allows you to provide the Security Group Rule. Required when --delete_rule argument is used
 ```
 
 ec2-ebs.py

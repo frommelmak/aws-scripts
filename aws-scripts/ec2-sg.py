@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.table import Table
 from requests import get
 import random
+import datetime
 
 def list_security_groups(Filter, GroupIds, RegionName):
     
@@ -212,8 +213,9 @@ def main():
                             }
                         },
                 ])
+                now = datetime.datetime.now()
                 if data:
-                    rule_table = Table(title="A new Inbound Rule added on the "+arg.allow_my_public_ip+" Security Group")
+                    rule_table = Table(title="Inbound Rule updated on the "+arg.allow_my_public_ip+" Security Group")
                     rule_table.add_column("SG Rule ID", style="cyan")
                     rule_table.add_column("IP Version", style="green")
                     rule_table.add_column("Type", style="green")
@@ -228,7 +230,7 @@ def main():
                         "TCP",
                         "[red]22",
                         "[red]"+ip+"/32",
-                        "[white]Modified on 28 Nov 2022 at 11:51 by ec2-sg.py from aws-scripts"
+                        "[white]Modified on "+now.strftime("%Y-%m-%d %H:%M:%S")+" by ec2-sg.py from aws-scripts"
                     )
                     console = Console()
                     console.print(rule_table)
