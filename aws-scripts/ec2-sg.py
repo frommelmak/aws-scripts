@@ -164,6 +164,9 @@ def main():
     parser.add_argument('--security_group_rule_id',
                         help="Modify the SSH inbound rule with your current public IP \
                              address inside the provided Security Group Rule ID")
+    parser.add_argument('--description',
+                        default="",
+                        help="Allows you to append a string to the rule description field")
     parser.add_argument('--sg_id',
                         help="Allows you to provide the Security Group Rule.\
                               Required when --delete_rule argument is used")
@@ -198,6 +201,7 @@ def main():
             print("Public IP address not found using any services")
             sys.exit(1)
         else:
+            now = datetime.datetime.now()
             try:
                 data = ec2.modify_security_group_rules(
                 GroupId=arg.allow_my_public_ip,
@@ -209,11 +213,10 @@ def main():
                                 'FromPort': 22,
                                 'ToPort': 22,
                                 'CidrIpv4': ip+'/32',
-                                'Description': 'Modified on 28 Nov 2022 at 11:51 by ec2-sg.py from aws-scripts'
+                                'Description': '('+arg.description+') '+now.strftime("%Y-%m-%d %H:%M:%S")+' by ec2-sg.py from aws-scripts'
                             }
                         },
                 ])
-                now = datetime.datetime.now()
                 if data:
                     rule_table = Table(title="Inbound Rule updated on the "+arg.allow_my_public_ip+" Security Group")
                     rule_table.add_column("SG Rule ID", style="cyan")
@@ -230,7 +233,7 @@ def main():
                         "TCP",
                         "[red]22",
                         "[red]"+ip+"/32",
-                        "[white]Modified on "+now.strftime("%Y-%m-%d %H:%M:%S")+" by ec2-sg.py from aws-scripts"
+                        "[white]("+arg.description+") "+now.strftime("%Y-%m-%d %H:%M:%S")+" by ec2-sg.py from aws-scripts"
                     )
                     console = Console()
                     console.print(rule_table)
