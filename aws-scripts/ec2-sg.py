@@ -167,9 +167,6 @@ def main():
     parser.add_argument('--description',
                         default="",
                         help="Allows you to append a string to the rule description field")
-    parser.add_argument('--sg_id',
-                        help="Allows you to provide the Security Group Rule.\
-                              Required when --delete_rule argument is used")
 
     arg = parser.parse_args()
     

@@ -170,8 +170,7 @@ As a sysadmin and/or developer, you or your team mates, will probably find yours
 This command help you to do so. Just use the argument `--allow_my_public_ip` providing the Security Group ID and the Security Group Rule ID you want to update. The command will find out your public IP and will update the rule allowing you the SSH access.
 
 ```
-ec2-sg.py -h
-usage: ec2-sg.py [-h] [-n NAME] [-l GID_LIST [GID_LIST ...]] [-r REGION] [-s SHOW] [--allow_my_public_ip ALLOW_MY_PUBLIC_IP] [--security_group_rule_id SECURITY_GROUP_RULE_ID] [--sg_id SG_ID]
+usage: ec2-sg.py [-h] [-n NAME] [-l GID_LIST [GID_LIST ...]] [-r REGION] [-s SHOW] [--allow_my_public_ip ALLOW_MY_PUBLIC_IP] [--security_group_rule_id SECURITY_GROUP_RULE_ID] [--description DESCRIPTION]
 
 Security Groups Management
 
@@ -187,7 +186,8 @@ options:
                         Modify the SSH inbound rule with your current public IP address inside the provided Security Group ID.
   --security_group_rule_id SECURITY_GROUP_RULE_ID
                         Modify the SSH inbound rule with your current public IP address inside the provided Security Group Rule ID
-  --sg_id SG_ID         Allows you to provide the Security Group Rule. Required when --delete_rule argument is used
+  --description DESCRIPTION
+                        Allows you to append a string to the rule description field
 ```
 
 ec2-ebs.py
