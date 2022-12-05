@@ -9,8 +9,6 @@ from rich.table import Table
 def list_instances():
    client = boto3.client('rds')
    instances = client.describe_db_instances() 
-   #columns_format="%-3s %-20s %-60s %-14s %-7s %-8s %-8s %-12s %-11s %-11s %-12s"
-   #print(columns_format % ("num", "Identifier", "Endpoint Address", "Class", "Engine", "Version", "MultiAZ", "VPC", "Zone", "2ry Zone", "Status"))
    num = 1
    table = Table()
    table.add_column("num", justify="right", no_wrap=True)
