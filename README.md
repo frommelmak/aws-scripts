@@ -54,7 +54,8 @@ When this method is used, the .ssh/config file is used to establish the connecti
 The '-h' option shows you how to use the available options.
 
 ```
-usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-l ID_LIST [ID_LIST ...]] [-i IGNORE] [-e EXECUTE] [-r REGION] [-u USER] [-c {direct,bastion-host}]
+usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [--public_ip PUBLIC_IP] [--private_ip PRIVATE_IP] [-l ID_LIST [ID_LIST ...]] [-i IGNORE] [-e EXECUTE] [-r REGION] [-u USER]
+                        [-c {direct,bastion-host}]
 
 Shows a list with your EC2 instances, then you can execute remote commands on those instances.
 
@@ -64,6 +65,10 @@ options:
   -t TYPE, --type TYPE  Filer result by type.
   -s STATUS, --status STATUS
                         Filter result by status.
+  --public_ip PUBLIC_IP
+                        Filter result by public ip address. You can provide the whole IP address string or just a portion of it.
+  --private_ip PRIVATE_IP
+                        Filter result by private ip adreess. You can provide the whole IP address string or just a portion of it.
   -l ID_LIST [ID_LIST ...], --id_list ID_LIST [ID_LIST ...]
                         Do not filter the result. Provide a InstanceIds list instead.
   -i IGNORE, --ignore IGNORE
@@ -72,11 +77,10 @@ options:
                         Execute a command on instances
   -r REGION, --region REGION
                         Specify an alternate region to override the one defined in the .aws/credentials file
-  -u USER, --user USER  User to run commands (if -e option is used). A user is always required, even if you have one defined in .ssh/config file 
+  -u USER, --user USER  User to run commands (if -e option is used). A user is always required, even if you have one defined in .ssh/config file
   -c {direct,bastion-host}, --connection_method {direct,bastion-host}
-                        The Method to connect to the instance (if -e option is used).
-                        If the instance exposes the SSH port on a public IP, use direct. Otherwhise choose bastion-host.
-                        This method look for the hostname and username inside the .ssh/config file to reach the target instance.
+                        The Method to connect to the instance (if -e option is used). If the instance exposes the SSH port on a public IP, use direct. Otherwhise choose bastion-host. This method look for
+                        the hostname and username inside the .ssh/config file to reach the target instance.
 
 ```
 

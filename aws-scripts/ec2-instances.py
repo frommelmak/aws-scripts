@@ -95,6 +95,10 @@ def main():
                         help="Filer result by type.")
     parser.add_argument('-s', '--status',
                         help="Filter result by status." )
+    parser.add_argument('--public_ip',
+                        help="Filter result by public ip address. You can provide the whole IP address string or just a portion of it.")
+    parser.add_argument('--private_ip',
+                        help="Filter result by private ip adreess. You can provide the whole IP address string or just a portion of it.")
     parser.add_argument('-l', '--id_list',
                         nargs='+', type=str,
                         help="Do not filter the result. Provide a InstanceIds list instead." )
@@ -134,6 +138,12 @@ def main():
 
     if arg.status:
         filter.append({'Name': 'instance-state-name', 'Values': ["*" + arg.status + "*"]})
+
+    if arg.public_ip:
+        filter.append({'Name': 'ip-address', 'Values': ["*" + arg.public_ip + "*"]})
+
+    if arg.private_ip:
+        filter.append({'Name': 'private-ip-address', 'Values': ["*" + arg.private_ip + "*"]})
 
     if arg.id_list:
         InstanceIds=arg.id_list
