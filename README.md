@@ -4,7 +4,8 @@
 aws-scripts
 ===========
 
-Here you will find some useful AWS scripts I use from time to time.
+Here you will find some useful AWS scripts I use often.
+
 
 All the scripts relies on [Boto](http://aws.amazon.com/sdkforpython/), a Python package that provides interfaces to Amazon Web Services.
 
@@ -41,7 +42,7 @@ ec2-instances.py
 
 Lists the EC2 instances including the Name Tag, IP, type, zone, vpc, subnet and the status.
 
-You can filter the result by name, type and/or status. Or you can provide a list of instance IDs instead.
+You can filter the result by name, type, status and/or public or private IP address. Or you can provide a list of instance IDs instead.
 
 Finally you can execute remote commands on all the instances returned by the filter or the list.
 
