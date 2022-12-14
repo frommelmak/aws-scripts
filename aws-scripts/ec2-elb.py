@@ -67,7 +67,7 @@ def list_elbv2(ec2, region):
                   target_state = "[red]"+target_state
               else:
                   target_state = "[orange1]"+target_state
-              tg_branch.add("[cyan]"+target_id+" [white]("+target_name+") [white]Status: "+target_state+" [white]Description: "+target_state_desc)
+              tg_branch.add("[cyan]"+target_id+" [white]("+target_name+") [white]Status: "+str(target_state)+" [white]Description: "+str(target_state_desc))
     print(tree)
 
 def main():
