@@ -7,29 +7,37 @@ from rich.tree import Tree
 from rich import print
 from rich.progress import track
 
-def get_name_tag(ec2, id):
-   instance = ec2.Instance(id)
-   name=""
-   for i in range(len(instance.tags)):
+def get_info(ec2, id):
+    instance = ec2.Instance(id)
+    name=""
+    for i in range(len(instance.tags)):
        if instance.tags[i]['Key'] == 'Name':
            name = instance.tags[i]['Value']
-   return name
-
+    return name, instance.placement['AvailabilityZone']
+ 
 def list_elb(ec2, region):
     client = boto3.client('elb')
     response = client.describe_load_balancers()
     tree = Tree("[bold white]Classic Elastic Load Balancers in the "+region+" AWS region")
     for elb in track(range(len(response.get('LoadBalancerDescriptions'))), description="Procesing..."):
       load_balancer_name = response.get('LoadBalancerDescriptions')[elb].get('LoadBalancerName')
-      instance_state = client.describe_instance_health(LoadBalancerName=load_balancer_name)
+      elb_instances_state = client.describe_instance_health(LoadBalancerName=load_balancer_name)
       elb_tree = tree.add(":file_folder: [bold white]"+load_balancer_name)
+      instances_info=[]
       for instance in range(len(response.get('LoadBalancerDescriptions')[elb].get('Instances'))):
-         track(range(20), description="Processing...")
-         instance_id = instance_state.get('InstanceStates')[instance].get('InstanceId')
-         if instance_state.get('InstanceStates')[instance].get('State') == 'OutOfService':
-             branch = elb_tree.add("[cyan]"+instance_id+" [white]("+get_name_tag(ec2, instance_id)+")"+" Status: [red]"+instance_state.get('InstanceStates')[instance].get('State'))
-         else:
-             branch = elb_tree.add("[cyan]"+instance_id+" [white]("+get_name_tag(ec2, instance_id)+")"+" Status: [green]"+instance_state.get('InstanceStates')[instance].get('State'))
+          instance_id = response.get('LoadBalancerDescriptions')[elb].get('Instances')[instance].get('InstanceId')
+          instance_name, instance_zone = get_info(ec2, instance_id)
+          instance_state = client.describe_instance_health(LoadBalancerName=load_balancer_name, Instances=[{'InstanceId': instance_id}]).get('InstanceStates')[0].get('State')
+          instances_info.append({"id": instance_id, "name": instance_name, "zone": instance_zone, "state": str(instance_state) })
+      for zone in range(len(response.get('LoadBalancerDescriptions')[elb].get('AvailabilityZones'))):
+        zone_name=response.get('LoadBalancerDescriptions')[elb].get('AvailabilityZones')[zone]
+        zone_tree = elb_tree.add(":file_folder: [bold white]"+zone_name)
+        for n in range(len(instances_info)):
+            if instances_info[n].get('zone') == zone_name:
+               if instances_info[n].get('state') == 'OutOfService':
+                  branch = zone_tree.add("[cyan]"+instances_info[n].get('id')+" [white]("+instances_info[n].get('name')+")"+" Status: [red]"+instances_info[n].get('state'))
+               else:
+                  branch = zone_tree.add("[cyan]"+instances_info[n].get('id')+" [white]("+instances_info[n].get('name')+")"+" Status: [green]"+instances_info[n].get('state'))
     print(tree)
 
 def list_elbv2(ec2, region):
@@ -40,6 +48,9 @@ def list_elbv2(ec2, region):
       load_balancer_name = response.get('LoadBalancers')[elb].get('LoadBalancerName')
       load_balancer_arn = response.get('LoadBalancers')[elb].get('LoadBalancerArn')
       load_balancer_type = response.get('LoadBalancers')[elb].get('Type')
+      load_balancer_zones = []
+      for n in range(len(response.get('LoadBalancers')[elb].get('AvailabilityZones'))):
+          load_balancer_zones.append(response.get('LoadBalancers')[elb].get('AvailabilityZones')[n].get('ZoneName'))
       load_balancer_tg = client.describe_target_groups(LoadBalancerArn=load_balancer_arn)
       elb_branch = tree.add(":file_folder:[bold white] "+load_balancer_name+" Type: "+load_balancer_type)
       tg_folder = elb_branch.add(":file_folder: Target Groups")
@@ -53,7 +64,7 @@ def list_elbv2(ec2, region):
               target_state_desc=target_health.get('TargetHealthDescriptions')[t].get('TargetHealth').get('Description')
               # Target Type: instance'|'ip'|'lambda'|'alb'
               if tg_dict.get('TargetType') == 'instance':
-                  target_name=get_name_tag(ec2, target_id)
+                  target_name, zone =get_info(ec2, target_id)
               elif tg_dict.get('TargetType') == 'ip':
                   target_name="ip"
               elif tg_dict.get('TargetType') == 'lambda':
