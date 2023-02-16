@@ -64,7 +64,7 @@ def list_elbv2(ec2, region):
                   elb_name, target_zone=get_info(ec2, target_id)
                   target_state=target_health.get('TargetHealthDescriptions')[t].get('TargetHealth').get('State')
                   target_state_desc=target_health.get('TargetHealthDescriptions')[t].get('TargetHealth').get('Description')
-                  # Target Type: instance'|'ip'|'lambda'|'alb'
+                  
                   if tg_dict.get('TargetType') == 'instance':
                       target_name, zone =get_info(ec2, target_id)
                   elif tg_dict.get('TargetType') == 'ip':
@@ -73,13 +73,14 @@ def list_elbv2(ec2, region):
                       target_name="lambda"
                   elif tg_dict.get('TargetType') == 'alb':
                       target_name="alb"
-                  # TargetHealth State: initial'|'healthy'|'unhealthy'|'unused'|'draining'|'unavailable'
+                      
                   if target_state == 'healthy':
                       target_state = "[green]"+target_state
                   elif target_state == 'unhealthy':
                       target_state = "[red]"+target_state
                   else:
                       target_state = "[orange1]"+target_state
+                      
                   if target_zone == zone_name:
                       zone_tree.add("[cyan]"+target_id+" [white]("+target_name+") [white]Status: "+str(target_state)+" [white]Description: "+str(target_state_desc))
     print(tree)
