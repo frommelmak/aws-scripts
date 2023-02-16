@@ -55,8 +55,8 @@ When this method is used, the .ssh/config file is used to establish the connecti
 The '-h' option shows you how to use the available options.
 
 ```
-usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [--public_ip PUBLIC_IP] [--private_ip PRIVATE_IP] [-l ID_LIST [ID_LIST ...]] [-i IGNORE] [-e EXECUTE] [-r REGION] [-u USER]
-                        [-c {direct,bastion-host}]
+usage: ec2-instances.py [-h] [-n NAME] [-t TYPE] [-s STATUS] [-z ZONE] [-v VPC] [-S SUBNET] [--public_ip PUBLIC_IP] [--private_ip PRIVATE_IP] [-l ID_LIST [ID_LIST ...]] [-i IGNORE] [-e EXECUTE] [-r REGION]
+                        [-u USER] [-c {direct,bastion-host}]
 
 Shows a list with your EC2 instances, then you can execute remote commands on those instances.
 
@@ -66,6 +66,10 @@ options:
   -t TYPE, --type TYPE  Filer result by type.
   -s STATUS, --status STATUS
                         Filter result by status.
+  -z ZONE, --zone ZONE  Filter result by Availability Zone.
+  -v VPC, --vpc VPC     Filter result by VPC Id.
+  -S SUBNET, --subnet SUBNET
+                        Filter result by Subnet Id.
   --public_ip PUBLIC_IP
                         Filter result by public ip address. You can provide the whole IP address string or just a portion of it.
   --private_ip PRIVATE_IP
@@ -82,7 +86,6 @@ options:
   -c {direct,bastion-host}, --connection_method {direct,bastion-host}
                         The Method to connect to the instance (if -e option is used). If the instance exposes the SSH port on a public IP, use direct. Otherwhise choose bastion-host. This method look for
                         the hostname and username inside the .ssh/config file to reach the target instance.
-
 ```
 
 ec2-reserved.py
