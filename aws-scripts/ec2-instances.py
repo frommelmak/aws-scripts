@@ -95,6 +95,12 @@ def main():
                         help="Filer result by type.")
     parser.add_argument('-s', '--status',
                         help="Filter result by status." )
+    parser.add_argument('-z', '--zone',
+                        help="Filter result by Availability Zone.")
+    parser.add_argument('-v', '--vpc',
+                        help="Filter result by VPC Id.")
+    parser.add_argument('-S', '--subnet',
+                        help="Filter result by Subnet Id.")
     parser.add_argument('--public_ip',
                         help="Filter result by public ip address. You can provide the whole IP address string or just a portion of it.")
     parser.add_argument('--private_ip',
@@ -138,6 +144,15 @@ def main():
 
     if arg.status:
         filter.append({'Name': 'instance-state-name', 'Values': ["*" + arg.status + "*"]})
+
+    if arg.vpc:
+        filter.append({'Name': 'vpc-id', 'Values': ["*" + arg.vpc + "*"]})
+
+    if arg.zone:
+        filter.append({'Name': 'availability-zone', 'Values': ["*" + arg.zone + "*"]})
+    
+    if arg.subnet:
+        filter.append({'Name': 'subnet-id', 'Values': ["*" + arg.subnet + "*"]})
 
     if arg.public_ip:
         filter.append({'Name': 'ip-address', 'Values': ["*" + arg.public_ip + "*"]})
