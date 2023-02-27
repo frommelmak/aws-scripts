@@ -236,6 +236,34 @@ options:
                         It shows the current generation of ELBs (Application, Network and/or Gateway) and/or the previous one (Classic).
 ```
 
+ec2-tg.py
+---------
+
+Without parameters just lists the target groups within a region. You can also list the targets in a given target group. Finally, you can also register or deregister targets to/from a group.
+
+```
+usage: ec2-tg.py [-h] [-s SHOW] [-a {register,deregister,details}] [--target_type {instances,ip_address,lambda_function,alb}] [--targets_id_list TARGETS_ID_LIST [TARGETS_ID_LIST ...]]
+                 [--target_group_arn TARGET_GROUP_ARN] [--role_arn ROLE_ARN] [-r REGION]
+
+Shows a list of Target Grops. Also allows you to register/unregister targets in/from a provided Targer Group
+
+options:
+  -h, --help            show this help message and exit
+  -s SHOW, --show SHOW  Shows the target for the provided Target Group ARN
+  -a {register,deregister,details}, --action {register,deregister,details}
+                        Set the desired action.
+  --target_type {instances,ip_address,lambda_function,alb}
+                        Set the desired state for the instances provided
+  --targets_id_list TARGETS_ID_LIST [TARGETS_ID_LIST ...]
+                        Targets Id list
+  --target_group_arn TARGET_GROUP_ARN
+                        Target Group ARN
+  --role_arn ROLE_ARN   If the script run on an EC2 instance with an IAM role attached, then the Security Token Service will provide a set of temporary credentials allowing the actions of the assumed role.
+                        With this method, no user credentials are required, just the Role ARN to be assumed.
+  -r REGION, --region REGION
+                        Specify the region to override the one setted in the credentials file or if you are using --role_arn.
+```
+
 ec2-snap-mgmt.py
 ----------------
 
