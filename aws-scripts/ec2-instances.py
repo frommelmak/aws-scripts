@@ -184,16 +184,18 @@ def main():
           names = names + " " + item["hostname"] + "(" + item["id"] + ")"
        print("\nCommand to execute: %s" % arg.execute)
        print("Executed by: %s" % arg.user)
-       print("Hosts list: %s\n" % names) 
-       for item in hosts:
-          if item["status"] == 'running':
-             if item["public_ip"] is None and arg.connection_method == 'direct':
-                print("::: %s (%s) is not reachable using direct method. Use the bastion-host instead  (command execution skiped)" % (item["hostname"], item["id"]))
-                continue
-             print("::: %s (%s)" % (item["hostname"], item["id"]))
-             print(execute_cmd(item[target], arg.user, arg.execute, arg.connection_method))
-          else:
-             print("::: %s (%s) is not running (command execution skiped)" % (item["hostname"], item["id"]))
+       print("Hosts list: %s\n" % names)
+       console = Console()
+       with console.status("[bold green]Working on remote execution...") as status:
+           for item in hosts:
+              if item["status"] == 'running':
+                 if item["public_ip"] is None and arg.connection_method == 'direct':
+                    console.log("::: %s (%s) is not reachable using direct method. Use the bastion-host instead  (command execution skiped)" % (item["hostname"], item["id"]))
+                    continue
+                 console.log("::: [green]%s[/green] [cyan](%s)[/cyan]" % (item["hostname"], item["id"]))
+                 print(execute_cmd(item[target], arg.user, arg.execute, arg.connection_method))
+              else:
+                 print("::: %s (%s) is not running (command execution skiped)" % (item["hostname"], item["id"]))
 
 if __name__ == '__main__':
     sys.exit(main())
