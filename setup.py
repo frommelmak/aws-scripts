@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws-scripts",
-    version = "0.1.15",
+    version = "0.1.16",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
@@ -21,9 +21,11 @@ setup(
                       'boto>=2.38.0',
                       'sshutil>=0.9.7',
                       'botocore>=1.21.60',
-                      'pymongo>=2.9,< 3.0',
                       'rich>=12.5.1',
                       ],
+    extras_require={
+        "mongodb": ['pymongo>=2.9,< 3.0'],
+    },
     python_requires='>=2.7',
     packages=find_packages(exclude=['docs', 'tests*']),
     scripts = ['aws-scripts/ec2-instances.py',
