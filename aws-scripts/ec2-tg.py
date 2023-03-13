@@ -59,15 +59,15 @@ def list_targets(ec2, arn_group):
     console = Console()
     console.print(table)
 
-def register_target(ec2, arn_group, target_list):
-    client = boto3.client('elbv2')
+def register_target(client, arn_group, target_list):
+    #client = boto3.client('elbv2')
     try:
         response=client.register_targets(TargetGroupArn=arn_group, Targets=target_list)
     except botocore.exceptions.ClientError as error:
         print(error.response['Error']['Message'])
 
-def unregister_target(ec2, arn_group, target_list):
-    client = boto3.client('elbv2')
+def unregister_target(client, arn_group, target_list):
+    #client = boto3.client('elbv2')
     try:
         response=client.deregister_targets(TargetGroupArn=arn_group, Targets=target_list)
     except botocore.exceptions.ClientError as error:
@@ -108,9 +108,9 @@ def main():
 
     if arg.role_arn:
       session = role.assumed_role_session(arg.role_arn)
-      ec2 = session.client('ec2', region_name=arg.region)
+      ec2 = session.client('elbv2', region_name=arg.region)
     else:
-      ec2 = boto3.client('ec2', region_name=arg.region)
+      ec2 = boto3.client('elbv2', region_name=arg.region)
 
     missing = 0
     if not arg.action:
