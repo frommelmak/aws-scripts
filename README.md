@@ -242,10 +242,10 @@ ec2-tg.py
 Without parameters just lists the target groups within a region. You can also list the targets in a given target group. Finally, you can also register or deregister targets to/from a group.
 
 ```
-usage: ec2-tg.py [-h] [-s SHOW] [-a {register,deregister,details}] [--target_type {instances,ip_address,lambda_function,alb}] [--targets_id_list TARGETS_ID_LIST [TARGETS_ID_LIST ...]]
+usage: ec2-tg.py [-h] [-s SHOW] [-a {register,deregister}] [--target_type {instances,ip_address,lambda_function,alb}] [--targets_id_list TARGETS_ID_LIST [TARGETS_ID_LIST ...]]
                  [--target_group_arn TARGET_GROUP_ARN] [--role_arn ROLE_ARN] [-r REGION]
 
-Shows a list of Target Grops. Also allows you to register/unregister targets in/from a provided Targer Group
+Shows a list of Target Grops. Also allows you to register/deregister targets in/from a provided Targer Group
 
 options:
   -h, --help            show this help message and exit

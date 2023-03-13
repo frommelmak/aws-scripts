@@ -76,12 +76,12 @@ def unregister_target(ec2, arn_group, target_list):
 
 def main():
     parser = argparse.ArgumentParser(description='Shows a list of Target Grops.\
-                        Also allows you to register/unregister targets in/from \
+                        Also allows you to register/deregister targets in/from \
                         a provided Targer Group')
     parser.add_argument('-s', '--show',
                         help="Shows the target for the provided Target Group ARN")
     parser.add_argument('-a', '--action', action='store',
-                        choices=['register', 'deregister', "details"],
+                        choices=['register', 'deregister'],
                         help="Set the desired action.")
     parser.add_argument('--target_type', action='store',
                         choices=['instances', 'ip_address', 'lambda_function', 'alb'],
@@ -145,8 +145,8 @@ def main():
                 targets.append(target)
             if arg.action == 'register':
                 register_target(ec2, arg.target_group_arn, targets)
-            elif arg.action == 'unregister':
-                register_target(ec2, arg.target_group_arn, targets)
+            elif arg.action == 'deregister':
+                unregister_target(ec2, arg.target_group_arn, targets)
 
     elif arg.show:
         session = boto3.session.Session()
