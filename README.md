@@ -50,52 +50,7 @@ The execution method support both: direct connections against the public instanc
 
 When this method is used, the .ssh/config file is used to establish the connection.
 
-<table style=background-color:black;">
-<td>
-<font color=#cdcdcd>
-<pre><font color="#26A269"><b>frommelmak@super8</b></font>:<font color="#12488B"><b>~</b></font>$ ec2-instances.py -n web-srv -e &apos;uptime&apos; -u ubuntu -c bastion-host
-┏━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
-┃<b> num </b>┃<b> Name                </b>┃<b> Public IP </b>┃<b> Private IP   </b>┃<b>                  ID </b>┃<b>     Type </b>┃<b>       Zone </b>┃<b> VPC          </b>┃<b> Subnet                   </b>┃<b> Status  </b>┃
-┡━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
-│   1 │<font color="#26A269"> web-srv01           </font>│<font color="#C01C28">           </font>│<font color="#C01C28"> 10.0.0.11    </font>│<font color="#2AA1B3"> i-xxxxxxxxxxxxxxxxx </font>│<font color="#26A269"> c3.large </font>│<font color="#26A269"> us-east-1b </font>│<font color="#2AA1B3"> vpc-246dcc41 </font>│<font color="#2AA1B3"> subnet-xxxxxxxxxxxxxxxxx </font>│ running │
-│   2 │<font color="#26A269"> web-srv02           </font>│<font color="#C01C28">           </font>│<font color="#C01C28"> 10.0.0.12    </font>│<font color="#2AA1B3"> i-xxxxxxxxxxxxxxxxx </font>│<font color="#26A269"> c3.large </font>│<font color="#26A269"> us-east-1b </font>│<font color="#2AA1B3"> vpc-246dcc41 </font>│<font color="#2AA1B3"> subnet-xxxxxxxxxxxxxxxxx </font>│ running │
-│   3 │<font color="#26A269"> web-srv03           </font>│<font color="#C01C28">           </font>│<font color="#C01C28"> 10.0.1.13    </font>│<font color="#2AA1B3"> i-xxxxxxxxxxxxxxxxx </font>│<font color="#26A269"> c3.large </font>│<font color="#26A269"> us-east-1d </font>│<font color="#2AA1B3"> vpc-246dcc41 </font>│<font color="#2AA1B3"> subnet-yyyyyyyyyyyyyyyyy </font>│ running │
-│   4 │<font color="#26A269"> web-srv04           </font>│<font color="#C01C28">           </font>│<font color="#C01C28"> 10.0.1.14    </font>│<font color="#2AA1B3"> i-xxxxxxxxxxxxxxxxx </font>│<font color="#26A269"> c3.large </font>│<font color="#26A269"> us-east-1d </font>│<font color="#2AA1B3"> vpc-246dcc41 </font>│<font color="#2AA1B3"> subnet-yyyyyyyyyyyyyyyyy </font>│ running │
-│<font color="#6C6C6C"><i>   5 </i></font>│<font color="#6C6C6C"><i> web-srv05           </i></font>│<font color="#6C6C6C"><i>           </i></font>│<font color="#6C6C6C"><i> 10.0.1.15    </i></font>│<font color="#6C6C6C"><i> i-xxxxxxxxxxxxxxxxx </i></font>│<font color="#6C6C6C"><i> c3.large </i></font>│<font color="#6C6C6C"><i> us-east-1d </i></font>│<font color="#6C6C6C"><i> vpc-246dcc41 </i></font>│<font color="#6C6C6C"><i> subnet-yyyyyyyyyyyyyyyyy </i></font>│<font color="#6C6C6C"><i> stopped </i></font>│
-└─────┴─────────────────────┴───────────┴──────────────┴─────────────────────┴──────────┴────────────┴──────────────┴──────────────────────────┴─────────┘
-Command to execute: uptime
-Executed by: ubuntu
-Hosts list:  <font color="#26A269">web-srv01</font>:<font color="#2AA1B3">i-xxxxxxxxxxxxxxxxx</font>  <font color="#26A269">web-srv02</font>:<font color="#2AA1B3">i-xxxxxxxxxxxxxxxxx</font>  <font color="#26A269">web-srv03</font>:<font color="#2AA1B3">i-xxxxxxxxxxxxxxxxx</font>  <font color="#26A269">web-srv04</font>:<font color="#2AA1B3">i-xxxxxxxxxxxxxxxxx</font>  
-<font color="#26A269">web-srv05</font>:<font color="#2AA1B3">i-xxxxxxxxxxxxxxxxx</font> 
-<font color="#33DA7A">───────────────────────────────────────────────────────────────── </font><font color="#26A269">web-srv01</font><font color="#2AA1B3"> : i-xxxxxxxxxxxxxxxxx</font><font color="#33DA7A"> ──────────────────────────────────────────────────────────────────</font>
-Command exited with status 0.
-=== stdout ===
- 10:30:09 up 60 days, 18:31,  0 users,  load average: 0.57, 0.62, 1.02
-
-(no stderr)
-<font color="#33DA7A">───────────────────────────────────────────────────────────────── </font><font color="#26A269">web-srv02</font><font color="#2AA1B3"> : i-xxxxxxxxxxxxxxxxx</font><font color="#33DA7A"> ──────────────────────────────────────────────────────────────────</font>
-Command exited with status 0.
-=== stdout ===
- 10:30:12 up 60 days,  1:28,  0 users,  load average: 0.04, 0.29, 0.55
-
-(no stderr)
-<font color="#33DA7A">───────────────────────────────────────────────────────────────── </font><font color="#26A269">web-srv03</font><font color="#2AA1B3"> : i-xxxxxxxxxxxxxxxxx</font><font color="#33DA7A"> ──────────────────────────────────────────────────────────────────</font>
-Command exited with status 0.
-=== stdout ===
- 10:30:15 up 11 days,  1:20,  0 users,  load average: 0.09, 0.66, 1.09
-
-(no stderr)
-<font color="#33DA7A">───────────────────────────────────────────────────────────────── </font><font color="#26A269">web-srv04</font><font color="#2AA1B3"> : i-00ba861e606b6c248</font><font color="#33DA7A"> ──────────────────────────────────────────────────────────────────</font>
-Command exited with status 0.
-=== stdout ===
- 10:30:17 up 14 days, 13:36,  0 users,  load average: 0.27, 0.96, 1.00
-
-(no stderr)
-<font color="#33DA7A">──────────────────────────────────────────── </font><font color="#26A269">web-srv05</font><font color="#2AA1B3"> : i-xxxxxxxxxxxxxxxxx</font> is not running <b>(</b>command execution skiped<b>)</b><font color="#33DA7A"> ─────────────────────────────────────────────</font>
-</pre>
-</font>
-</td>
-</table>
+![Demo](https://github.com/frommlemak/aws-scripts/raw/master/img/demo.png)
 
 The '-h' option shows you how to use the available options.
 
