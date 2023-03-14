@@ -145,7 +145,7 @@ optional arguments:
                         Specify an alternate region to override the one defined in the .aws/credentials file
 ```
 
-This is an example of the minimun permissions required in the Role Policy in order to auto-stop an instance from a cron job.
+This is an example of the minimum permissions required in the Role Policy in order to auto-stop an instance from a cron job.
 
 ```
 {
@@ -155,7 +155,7 @@ This is an example of the minimun permissions required in the Role Policy in ord
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": "ec2:StopInstances",
-            "Resource": "arn:aws:ec2:eu-west-1:<ACCOUNT_ID>:instance/<INSTANCE_ID>"
+            "Resource": "arn:aws:ec2:<AWS-REGION>:<ACCOUNT_ID>:instance/<INSTANCE_ID>"
         },
         {
             "Sid": "VisualEditor1",
@@ -262,6 +262,67 @@ options:
                         With this method, no user credentials are required, just the Role ARN to be assumed.
   -r REGION, --region REGION
                         Specify the region to override the one setted in the credentials file or if you are using --role_arn.
+```
+
+This is the minimum permissions required in the assumed role policy in order to allow register or deregister a target from the same target.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "elasticloadbalancing:RegisterTargets",
+                "elasticloadbalancing:DeregisterTargets"
+            ],
+            "Resource": "arn:aws:elasticloadbalancing:<AWS_REGION>:<ACCOUNT_ID>:targetgroup/<TG_NAME>/<TG_ID>"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/TPS-TargetGroup-management"
+        }
+    ]
+}
+```
+
+In addition, you need to perform a little modification in the Trusted Relationships to allow the Elastic Load Balancing as a AWS service or as role session.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": [
+                    "elasticloadbalancing.amazonaws.com",
+                    "ec2.amazonaws.com"
+                ]
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:sts::<ACCOUNT_ID>:assumed-role/<TG_ROLE_NAME>/<INSTANCE_ID>",
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
 ```
 
 ec2-snap-mgmt.py
