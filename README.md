@@ -50,7 +50,7 @@ The execution method support both: direct connections against the public instanc
 
 When this method is used, the .ssh/config file is used to establish the connection.
 
-![Demo](https://github.com/frommlemak/aws-scripts/raw/master/img/demo.png)
+![Demo](https://github.com/frommelmak/aws-scripts/raw/master/img/demo.png)
 
 The '-h' option shows you how to use the available options.
 
