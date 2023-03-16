@@ -69,7 +69,7 @@ def main():
     parser.add_argument('-n', '--name',
                         help="Filter result by name.")
     parser.add_argument('-t', '--type',
-                        choices=['gp2', 'io1', 'st1', 'sc1', 'standard'],
+                        choices=['gp3', 'gp2', 'io1', 'st1', 'sc1', 'standard'],
                         help="Filer result by type.")
     parser.add_argument('-s', '--status',
                         choices=['creating','available','in-use','deleting','deleted','error'],
