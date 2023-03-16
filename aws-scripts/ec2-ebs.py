@@ -3,6 +3,8 @@
 import boto3
 import sys
 import argparse
+from rich.console import Console
+from rich.table import Table
 
 def list_volumes(Filter):
    ec2 = boto3.resource('ec2')
@@ -22,8 +24,18 @@ def list_volumes(Filter):
    
    
    volumes = ec2.volumes.filter(Filters=Filter)
-   columns_format="%-3s %-26s %6s GB  %-16s %-22s %-20s %-24s %-10s %-11s %-12s %-16s"
-   print(columns_format % ("num", "Name", "Size", "device", "Volume ID", "Instance ID", "Instance Tag Name", "Type", "IOPS", "Zone", "Status"))
+   table = Table()
+   table.add_column("num", justify="right", no_wrap=True)
+   table.add_column("Name", style="green")
+   table.add_column("Size", style="red")
+   table.add_column("device", style="green")
+   table.add_column("Volume ID", justify="right", style="cyan")
+   table.add_column("Instance ID", justify="right", style="cyan")
+   table.add_column("Instance Tag Name", justify="right", style="green")
+   table.add_column("Type", style="green")
+   table.add_column("IOPS", style="red")
+   table.add_column("Zone", style="green")
+   table.add_column("Status", style="green")
    num = 1
    vols = [] 
    name = {}  
@@ -49,20 +61,23 @@ def list_volumes(Filter):
       
       ec2_attached = next((instance for instance in instances_lst if instance["id"] == instance_id), {'id': instance_id, 'name':''}) 
       #print(tag_name['name'])      
-      print(columns_format % (
-                               num,
-                               name['Value'], 
-                               i.size,
-                               device,
-                               i.volume_id,
-                               instance_id,
-                               ec2_attached['name'],
-                               i.volume_type,
-                               i.iops,
-                               i.availability_zone,
-                               i.state
-                             ))
+      table.add_row(
+        str(num),
+        name['Value'], 
+        str(i.size) + " GB",
+        device,
+        i.volume_id,
+        instance_id,
+        ec2_attached['name'],
+        i.volume_type,
+        str(i.iops),
+        i.availability_zone,
+        i.state
+      )
       num = num + 1
+   console = Console()
+   console.print(table)
+
 
 def main():
     parser = argparse.ArgumentParser(description='List all the Elastic Block Storage volumes')
