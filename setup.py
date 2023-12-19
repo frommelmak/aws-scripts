@@ -16,7 +16,7 @@ setup(
     install_requires=['boto3>=1.18.60',
                       'argparse',
                       'fabric>=2.7.1',
-                      'paramiko==2.8.1',
+                      'paramiko==3.4.0',
                       'google-api-python-client>=1.7.3',
                       'oauth2client>=4.1.2',
                       'boto>=2.38.0',
