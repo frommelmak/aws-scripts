@@ -3,9 +3,24 @@ import boto3
 import sys
 import argparse
 from fabric import Connection
+from fabric import Config
 import re
+import paramiko.auth_handler
 from rich.console import Console
 from rich.table import Table
+
+# Monkey-patch paramiko 2.9.0+ to allow ssh-rsa pubkey authentication.
+# Paramiko's _finalize_pubkey_algorithm rejects ssh-rsa if the server's
+# server-sig-algs extension doesn't explicitly list it. Legacy servers
+# (OpenSSH < 7.4) don't send this extension at all, and older servers
+# (Ubuntu 12.04, network devices) may only support ssh-rsa. Combined
+# with disabled_algorithms={'pubkeys': ['rsa-sha2-256','rsa-sha2-512']},
+# this forces paramiko to use ssh-rsa (SHA1) for pubkey auth.
+# See: https://github.com/paramiko/paramiko/issues/2012
+_original_finalize = paramiko.auth_handler.AuthHandler._finalize_pubkey_algorithm
+def _patched_finalize_pubkey_algorithm(self, key_type):
+    return key_type
+paramiko.auth_handler.AuthHandler._finalize_pubkey_algorithm = _patched_finalize_pubkey_algorithm
 
 def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
    ec2 = boto3.resource('ec2', region_name=RegionName)
@@ -78,14 +93,36 @@ def list_instances(Filter, RegionName, InstanceIds, IgnorePattern):
    return hosts
 
 def execute_cmd(host,user,cmd,connection_method):
+    ssh_config = Config()
+    disabled = {
+        "disabled_algorithms": {
+            "pubkeys": ["rsa-sha2-256", "rsa-sha2-512"]
+        }
+    }
     if connection_method == 'bastion-host':
-       # The connection user is readed from ./ssh/config file
-       result = Connection(host=host, user=user).run(cmd, hide=True, warn=True)
-       return result
+        gateway = Connection(
+            host="bastion",
+            config=ssh_config,
+            connect_kwargs=disabled,
+        )
+        target_config = ssh_config.base_ssh_config.lookup(host)
+        target_user = target_config.get("user", user)
+        result = Connection(
+            host=host,
+            user=target_user,
+            config=ssh_config,
+            connect_kwargs=disabled,
+            gateway=gateway,
+        ).run(cmd, hide=True, warn=True)
+        return result
     if connection_method == 'direct':
-        # The connection user is passed as an argument and defaults to ubuntu
-       result = Connection(host=host, user=user).run(cmd, hide=True, warn=True)
-       return result
+        result = Connection(
+            host=host,
+            user=user,
+            config=ssh_config,
+            connect_kwargs=disabled,
+        ).run(cmd, hide=True, warn=True)
+        return result
 
 def main():
     parser = argparse.ArgumentParser(description='Shows a list with your EC2 instances, then you can execute remote commands on those instances.')
