@@ -5,7 +5,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "aws-scripts",
+    name = "aws_scripts",
     version = "0.1.21",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
