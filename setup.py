@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "aws_scripts",
-    version = "0.1.21",
+    version = "0.1.22",
     author = "Marcos Martinez",
     author_email = "frommelmak@gmail.com",
     description = "Some useful AWS scripts I use from time to time",
