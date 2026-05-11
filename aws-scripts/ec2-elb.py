@@ -3,6 +3,7 @@
 import boto3
 import sys
 import argparse
+from botocore.exceptions import ClientError
 from rich.tree import Tree
 from rich import print
 from rich.progress import track
@@ -25,9 +26,21 @@ def get_instance_info_batch(ec2, instance_ids):
         }
     return info
 
-def list_elb(ec2, region):
+def list_elb(ec2, region, name=None):
     client = boto3.client('elb')
-    response = client.describe_load_balancers()
+    try:
+        if name:
+            response = client.describe_load_balancers(LoadBalancerNames=[name])
+        else:
+            response = client.describe_load_balancers()
+    except ClientError as e:
+        if e.response['Error']['Code'] in ['AccessPointNotFound', 'LoadBalancerNotFound']:
+            return False
+        raise e
+
+    if not response.get('LoadBalancerDescriptions'):
+        return False
+
     tree = Tree("[bold white]Classic Elastic Load Balancers in the "+region+" AWS region")
 
     all_instance_ids = []
@@ -69,10 +82,23 @@ def list_elb(ec2, region):
                     else:
                         branch = zone_tree.add("[cyan]"+inst.get('id')+" [white]("+inst.get('name')+")"+" Status: [green]"+inst.get('state'))
     print(tree)
+    return True
 
-def list_elbv2(ec2, region):
+def list_elbv2(ec2, region, name=None):
     client = boto3.client('elbv2')
-    response = client.describe_load_balancers()
+    try:
+        if name:
+            response = client.describe_load_balancers(Names=[name])
+        else:
+            response = client.describe_load_balancers()
+    except ClientError as e:
+        if e.response['Error']['Code'] in ['LoadBalancerNotFound', 'ValidationError']:
+            return False
+        raise e
+
+    if not response.get('LoadBalancers'):
+        return False
+
     tree = Tree("[bold white]Current Generation of Elastic Load Balancers in %s AWS region" % region)
 
     all_target_ids = []
@@ -164,22 +190,51 @@ def list_elbv2(ec2, region):
                     if target.get('type') == 'instance' and target_zone == zone_name:
                         zone_tree.add("[cyan]"+target['id']+" [white]("+target_name+") [white]Status: "+target_state_colored+" [white]Description: "+str(target_desc))
     print(tree)
+    return True
 
 def main():
     parser = argparse.ArgumentParser(description='For every Elastic Load Balancer list the attached instances')
     parser.add_argument('-t', '--type', choices=['classic', 'current', 'all'],
                         default="all", help="It shows the current generation of ELBs (Application, Network and/or Gateway) and/or the previous one (Classic).")
+    parser.add_argument('-n', '--name', help="Filter by Load Balancer name.")
+    parser.add_argument('-l', '--list', action='store_true', help="List only all the Load Balancer names in the account.")
 
     arg = parser.parse_args()
 
     session = boto3.session.Session()
     region = session.region_name
 
+    if arg.list:
+        if arg.type == 'classic' or arg.type == 'all':
+            client = boto3.client('elb')
+            response = client.describe_load_balancers()
+            if response.get('LoadBalancerDescriptions'):
+                print(f"[bold white]Classic Load Balancers in {region}:")
+                for lb in response.get('LoadBalancerDescriptions'):
+                    print(f"  - {lb['LoadBalancerName']}")
+        
+        if arg.type == 'current' or arg.type == 'all':
+            client = boto3.client('elbv2')
+            response = client.describe_load_balancers()
+            if response.get('LoadBalancers'):
+                if arg.type == 'all' and response.get('LoadBalancers'):
+                    print("")
+                print(f"[bold white]Current Generation Load Balancers in {region}:")
+                for lb in response.get('LoadBalancers'):
+                    print(f"  - {lb['LoadBalancerName']} [white]({lb['Type']})")
+        return
+
     ec2 = boto3.resource('ec2')
+    found = False
     if arg.type == 'classic' or arg.type == 'all':
-        list_elb(ec2, region)
+        if list_elb(ec2, region, arg.name):
+            found = True
     if arg.type == 'current' or arg.type == 'all':
-        list_elbv2(ec2, region)
+        if list_elbv2(ec2, region, arg.name):
+            found = True
+
+    if arg.name and not found:
+        print(f"[bold red]Error:[/] Load Balancer '[bold white]{arg.name}[/]' not found in region {region}.")
 
 if __name__ == '__main__':
     sys.exit(main())
