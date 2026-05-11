@@ -234,6 +234,8 @@ options:
   -h, --help            show this help message and exit
   -t {classic,current,all}, --type {classic,current,all}
                         It shows the current generation of ELBs (Application, Network and/or Gateway) and/or the previous one (Classic).
+  -n NAME, --name NAME  Filter by Load Balancer name.
+  -l, --list            List only all the Load Balancer names in the account.
 ```
 
 ec2-tg.py
