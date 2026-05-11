@@ -226,7 +226,7 @@ ec2-elb.py
 Lists all your Elastic Load Balancers and his related instances.
 
 ```
-usage: ec2-elb.py [-h] [-t {classic,current,all}]
+usage: ec2-elb.py [-h] [-t {classic,current,all}] [-n NAME] [-l]
 
 For every Elastic Load Balancer list the attached instances
 
