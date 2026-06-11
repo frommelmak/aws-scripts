@@ -105,11 +105,9 @@ def execute_cmd(host,user,cmd,connection_method):
             config=ssh_config,
             connect_kwargs=disabled,
         )
-        target_config = ssh_config.base_ssh_config.lookup(host)
-        target_user = target_config.get("user", user)
         result = Connection(
             host=host,
-            user=target_user,
+            user=user,
             config=ssh_config,
             connect_kwargs=disabled,
             gateway=gateway,
